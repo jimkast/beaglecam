@@ -1,0 +1,15 @@
+<section data-ng-controller="AnswersController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Answers</h1>
+    </div>
+    <div class="list-group">
+        <a data-ng-repeat="answer in answers" data-ng-href="#!/answers/{{answer._id}}" class="list-group-item">
+            <small class="list-group-item-text">{{answer.created | date:'medium'}} / {{answer.user.displayName}}</small>
+            <h4 class="list-group-item-heading">{{answer.question.name}}</h4>
+            <p>{{answer.description}}</p>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!answers.$resolved || answers.length">
+    	No Answers yet, why don't you <a href="/#!/answers/create">create one</a>?
+    </div>
+</section>
