@@ -62,7 +62,7 @@ angular.module('grades').controller('GradesController', ['$scope', '$stateParams
         };
 
 
-        $scope.answer = {};
+        $scope.grade = {};
 
         $scope.fetchQuestions = function(){
             $scope.questions = Questions.query(function(){
@@ -71,8 +71,14 @@ angular.module('grades').controller('GradesController', ['$scope', '$stateParams
         };
 
 
-        $scope.fetchAnswers = function(questionId){
-            $scope.answers = Answers.query();
+        $scope.fetchAnswers = function(){
+            $scope.answers = Answers.query({
+                question: $scope.question
+            }, function(a){
+                if($scope.answers.length){
+                    $scope.grade.answer = $scope.answers[0]._id;
+                }
+            });
         };
     }
 ]);
