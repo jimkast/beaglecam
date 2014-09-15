@@ -1,0 +1,42 @@
+<section ng-controller="TeacherController">
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <div class="row" ng-init="fetchQuestions()">
+        <div class="col-sm-6">
+            <h2>Main Question Pool ({{questions.length}})</h2>
+
+            <ul>
+                <li>
+                    <a href="" ng-click="questions.selectedQuestion = ''" ng-class="{'text-danger': !questions.selectedQuestion}">
+                        <b>--- ALL ---</b>
+                    </a>
+                </li>
+                <li ng-repeat="question in questions">
+                    <a href="" ng-click="questions.selectedQuestion = question" ng-class="{'text-danger': questions.selectedQuestion==question}">
+                        <b>{{question.name}}</b>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-sm-6" ng-init="fetchAnswers()">
+            <h2>Submitted Answers ({{answers.length}})</h2>
+
+            <ul>
+                <li ng-repeat="answer in answers | filter: {'question': questions.selectedQuestion}">
+                    <a href="#!/answers/{{answer._id}}">
+	                    {{answer.description}}
+	                    <br>
+	                    <small>{{answer.user.displayName}}</small>
+                	</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</section>

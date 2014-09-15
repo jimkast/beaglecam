@@ -7,15 +7,15 @@ angular.module('grades').controller('GradesController', ['$scope', '$stateParams
 
         // Create new Grade
         $scope.create = function() {
-        	// Create new Grade object
+            // Create new Grade object
             var grade = new Grades($scope.grade);
 
             // Redirect after save
             grade.$save(function(response) {
                 $location.path('grades/' + response._id);
             }, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+                $scope.error = errorResponse.data.message;
+            });
 
             // Clear form fields
             angular.copy({}, $scope.grade);
@@ -45,8 +45,8 @@ angular.module('grades').controller('GradesController', ['$scope', '$stateParams
             grade.$update(function() {
                 $location.path('grades/' + grade._id);
             }, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+                $scope.error = errorResponse.data.message;
+            });
         };
 
         // Find a list of Grades
@@ -64,19 +64,26 @@ angular.module('grades').controller('GradesController', ['$scope', '$stateParams
 
         $scope.grade = {};
 
-        $scope.fetchQuestions = function(){
-            $scope.questions = Questions.query(function(){
-                $scope.question = $scope.questions[0]._id;
+        $scope.fetchQuestions = function() {
+            $scope.questions = Questions.query(function() {
+                $scope.question = $scope.grade.answer && $scope.grade.answer.question || $scope.questions[0]._id;
             });
         };
 
 
-        $scope.fetchAnswers = function(){
+        $scope.$watch('question', function(val){
+            if(val){
+                $scope.fetchAnswers(val);
+            }
+        });
+
+
+        $scope.fetchAnswers = function() {
             $scope.answers = Answers.query({
                 question: $scope.question
-            }, function(a){
-                if($scope.answers.length){
-                    $scope.grade.answer = $scope.answers[0]._id;
+            }, function(a) {
+                if ($scope.answers.length) {
+                    $scope.grade.answer = $scope.grade.answer && $scope.grade.answer._id || $scope.answers[0]._id;
                 }
             });
         };

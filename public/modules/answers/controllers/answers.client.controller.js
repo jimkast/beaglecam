@@ -1,8 +1,8 @@
 'use strict';
 
 // Answers controller
-angular.module('answers').controller('AnswersController', ['$scope', '$stateParams', '$location', 'Authentication', 'Answers', 'Questions',
-    function($scope, $stateParams, $location, Authentication, Answers, Questions) {
+angular.module('answers').controller('AnswersController', ['$scope', '$sce', '$stateParams', '$location', 'Authentication', 'Answers', 'Questions',
+    function($scope, $sce, $stateParams, $location, Authentication, Answers, Questions) {
         $scope.authentication = Authentication;
 
         // Create new Answer
@@ -26,11 +26,8 @@ angular.module('answers').controller('AnswersController', ['$scope', '$statePara
             if (answer) {
                 answer.$remove();
 
-                for (var i in $scope.answers) {
-                    if ($scope.answers[i] === answer) {
-                        $scope.answers.splice(i, 1);
-                    }
-                }
+                $scope.answers.splice($scope.answers, $scope.answers.indexOf(answer));
+
             } else {
                 $scope.answer.$remove(function() {
                     $location.path('answers');
@@ -58,14 +55,18 @@ angular.module('answers').controller('AnswersController', ['$scope', '$statePara
         $scope.findOne = function() {
             $scope.answer = Answers.get({
                 answerId: $stateParams.answerId
+            }, function() {
+                $scope.answer.video2 = $sce.trustAsResourceUrl($scope.answer.video.replace('watch?v=', 'embed/'));
+
             });
+
         };
 
         $scope.answer = {};
 
-        $scope.fetchQuestions = function(){
-            $scope.questions = Questions.query(function(){
-                $scope.answer.question = $scope.questions[0]._id;
+        $scope.fetchQuestions = function() {
+            $scope.questions = Questions.query(function() {
+                $scope.answer.question = $scope.answer.question && $scope.answer.question._id || $scope.questions[0]._id;
             });
         };
 

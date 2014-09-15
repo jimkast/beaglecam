@@ -1,6 +1,7 @@
 <section data-ng-controller="GradesController" data-ng-init="findOne()">
 	<div class="page-header">
-		<h1>{{grade.name}}</h1>
+		<h1>{{grade.value}}</h1>
+        <p>{{grade.answer.description}}</p>
 	</div>
 	<div class="pull-right" data-ng-show="authentication.user._id == grade.user._id">
 		<a class="btn btn-primary" href="/#!/grades/{{grade._id}}/edit">
@@ -10,6 +11,9 @@
 			<i class="glyphicon glyphicon-trash"></i>
 		</a>
 	</div>
+
+	<iframe width="420" height="315" ng-src="{{grade.answer.video2}}" frameborder="0" allowfullscreen></iframe>
+
 	<small>
 		<em class="text-muted">Posted on {{grade.created | date:'mediumDate'}} by {{grade.user.displayName}}</em>
 	</small>
