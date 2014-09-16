@@ -9,7 +9,7 @@
 		<a href="/#!/" class="navbar-brand">Cam Project</a>
 	</div>
 	<nav class="collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
-		<ul class="nav navbar-nav" data-ng-if="menu.shouldRender(authentication.user);">
+		<ul class="nav navbar-nav">
 			<li data-ng-repeat="item in menu.items" data-ng-if="item.shouldRender(authentication.user);" ui-route="{{item.uiRoute}}" ng-class="{active: $uiRoute}">
 				<a href="/#!/{{item.link}}">{{item.title}}</a>
 			</li>

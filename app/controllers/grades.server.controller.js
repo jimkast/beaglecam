@@ -99,7 +99,7 @@ exports.delete = function(req, res) {
  * List of Grades
  */
 exports.list = function(req, res) {
-	Grade.find().sort('-created').populate('user', 'displayName').populate('answer').exec(function(err, grades) {
+	Grade.find(req.query).sort('-created').populate('user', 'displayName').populate('answer').exec(function(err, grades) {
 		if (err) {
 			return res.send(400, {
 				message: getErrorMessage(err)

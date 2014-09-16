@@ -1,8 +1,8 @@
 'use strict';
 
 // Grades controller
-angular.module('grades').controller('GradesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Grades', 'Questions', 'Answers',
-    function($scope, $stateParams, $location, Authentication, Grades, Questions, Answers) {
+angular.module('grades').controller('GradesController', ['$scope', '$sce', '$stateParams', '$location', 'Authentication', 'Grades', 'Questions', 'Answers',
+    function($scope, $sce, $stateParams, $location, Authentication, Grades, Questions, Answers) {
         $scope.authentication = Authentication;
 
         // Create new Grade
@@ -58,8 +58,30 @@ angular.module('grades').controller('GradesController', ['$scope', '$stateParams
         $scope.findOne = function() {
             $scope.grade = Grades.get({
                 gradeId: $stateParams.gradeId
+            }, function() {
+                $scope.grade.answer.video2 = $sce.trustAsResourceUrl($scope.grade.answer.video.replace('watch?v=', 'embed/'));
             });
         };
+
+
+
+
+        $scope.findByAnswer = function(answerId) {
+            var answerId = answerId || $stateParams.answerId;
+            var items = Grades.query({
+                answer: answerId
+            }, function(grades) {
+                if (grades.length) {
+                    $scope.grade = grades[0];
+                    $scope.grade.answer.video2 = $sce.trustAsResourceUrl($scope.grade.answer.video.replace('watch?v=', 'embed/'));
+                } else {
+                    $scope.grade = {
+                        answer: answerId
+                    }
+                }
+            });
+        };
+
 
 
         $scope.grade = {};
@@ -71,8 +93,8 @@ angular.module('grades').controller('GradesController', ['$scope', '$stateParams
         };
 
 
-        $scope.$watch('question', function(val){
-            if(val){
+        $scope.$watch('question', function(val) {
+            if (val) {
                 $scope.fetchAnswers(val);
             }
         });

@@ -5,20 +5,18 @@ angular.module('teacher').controller('TeacherController', ['$scope', '$sce', '$s
     function($scope, $sce, $stateParams, $location, Authentication, Grades, Answers, Questions) {
         $scope.authentication = Authentication;
 
-        $scope.AnswerInstance = {};
-
         // Find a list of Answers
         $scope.fetchAnswers = function(questionId) {
             $scope.answers = Answers.query();
         };
 
-        $scope.answers = Answers.query({
-            question: $scope.question
-        }, function(a) {
-            if ($scope.answers.length) {
-                $scope.grade.answer = $scope.grade.answer && $scope.grade.answer._id || $scope.answers[0]._id;
-            }
-        });
+        // $scope.answers = Answers.query({
+        //     question: $scope.question
+        // }, function(a) {
+        //     if ($scope.answers.length) {
+        //         $scope.grade.answer = $scope.grade.answer && $scope.grade.answer._id || $scope.answers[0]._id;
+        //     }
+        // });
 
         // Find existing Answer
         $scope.findOne = function() {

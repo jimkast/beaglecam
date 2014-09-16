@@ -20,11 +20,25 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" value="Update" class="btn btn-default">
+                    <label class="control-label" for="readTime">Read Time</label>
+                    <div class="controls">
+                        <input type="number" data-ng-model="question.readTime" id="readTime" class="form-control" placeholder="Read Time" required>
+                    </div>
                 </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong>{{error}}</strong>
-				</div>
+
+                <div class="form-group">
+                    <label class="control-label" for="recordTime">Record Time</label>
+                    <div class="controls">
+                        <input type="number" data-ng-model="question.recordTime" id="recordTime" class="form-control" placeholder="Record Time" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-default">
+                </div>
+                <div data-ng-show="error" class="text-danger">
+                    <strong>{{error}}</strong>
+                </div>
             </fieldset>
         </form>
     </div>

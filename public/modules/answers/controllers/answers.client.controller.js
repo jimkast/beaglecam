@@ -57,9 +57,7 @@ angular.module('answers').controller('AnswersController', ['$scope', '$sce', '$s
                 answerId: $stateParams.answerId
             }, function() {
                 $scope.answer.video2 = $sce.trustAsResourceUrl($scope.answer.video.replace('watch?v=', 'embed/'));
-
             });
-
         };
 
         $scope.answer = {};
