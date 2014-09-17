@@ -1,7 +1,7 @@
 'use strict';
 
 // Answers controller
-angular.module('teacher').controller('TeacherController', ['$scope', '$sce', '$stateParams', '$location', 'Authentication', 'Grades', 'Answers', 'Questions',
+angular.module('student').controller('StudentController', ['$scope', '$sce', '$stateParams', '$location', 'Authentication', 'Grades', 'Answers', 'Questions',
     function($scope, $sce, $stateParams, $location, Authentication, Grades, Answers, Questions) {
         $scope.authentication = Authentication;
 
