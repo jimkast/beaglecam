@@ -6,12 +6,12 @@
     <br>
 
 
-    <div class="row" ng-init="fetchQuestions()">
+    <div class="row" ng-init="Questions.find()">
         <div class="col-sm-6">
             <h2>Main Question Pool (
                 <span ng-bind="questions.length"></span>)</h2>
 
-            <a href="/#!/questions/create" class="btn btn-default">Add New</a>
+            <a data-ng-href="{{Questions.urls.create()}}" class="btn btn-default">Add New</a>
 
             <br>
             <br>
@@ -30,14 +30,14 @@
                         <br>Record Time: <b ng-bind="question.recordTime"></b>
                     </a>
                     <br>
-                    <a class="btn btn-default" href="/#!/questions/{{question._id}}/edit" ng-click="">Edit</a>
+                    <a class="btn btn-default" data-ng-href="{{Questions.urls.edit(question._id)}}" ng-click="">Edit</a>
                     <br>
                     <br>
                 </li>
             </ul>
         </div>
 
-        <div class="col-sm-6" ng-init="fetchAnswers()">
+        <div class="col-sm-6" ng-init="Answers.find()">
             <h2>Submitted Answers (
                 <span ng-bind="answers.length"></span>)</h2>
 

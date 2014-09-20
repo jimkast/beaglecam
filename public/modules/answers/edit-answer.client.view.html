@@ -1,15 +1,15 @@
-<section data-ng-controller="AnswersController" data-ng-init="findOne()">
+<section data-ng-controller="AnswersController" data-ng-init="Answers.findOne()">
     <div class="page-header">
         <h1>Edit Answer</h1>
     </div>
     <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="update();" novalidate>
+        <form class="form-horizontal" data-ng-submit="Answers.update();" novalidate>
             <fieldset>
 
                 <div class="form-group">
                     <label class="control-label" for="question">Question</label>
                     <div class="controls">
-                        <select ng-options="question._id as question.name for question in questions" data-ng-model="answer.question" id="question" class="form-control" ng-init="fetchQuestions()" required></select>
+                        <select ng-options="question._id as question.name for question in questions" data-ng-model="answer.question._id" id="question" class="form-control" ng-init="Questions.find()" required></select>
                     </div>
                 </div>
 
@@ -32,7 +32,7 @@
                     <input type="submit" class="btn btn-default">
                 </div>
                 <div data-ng-show="error" class="text-danger">
-                    <strong>{{error}}</strong>
+                    <strong>{{Answers.error}}</strong>
                 </div>
             </fieldset>
         </form>

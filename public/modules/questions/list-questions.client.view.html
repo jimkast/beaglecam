@@ -1,0 +1,19 @@
+<section data-ng-controller="QuestionsController" data-ng-init="Questions.find()">
+    <div class="page-header">
+        <h1>Questions</h1>
+    </div>
+    <div class="list-group">
+        <a data-ng-repeat="item in questions" data-ng-href="{{Questions.urls.view(item._id)}}" class="list-group-item">
+            <small class="list-group-item-text">
+                <span data-ng-bind="item.created | date:'medium'"></span>
+                /
+                <span data-ng-bind="item.user.displayName"></span>
+            </small>
+            <h4 class="list-group-item-heading" data-ng-bind="item.name"></h4>
+            <p class="list-group-item-text" data-ng-bind="item.content"></p>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!questions.$resolved || questions.length">
+    	No Questions yet, why don't you <a data-ng-href="{{Questions.urls.create()}}">create one</a>?
+    </div>
+</section>

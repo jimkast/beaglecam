@@ -111,7 +111,7 @@ exports.list = function(req, res) {
  * Answer middleware
  */
 exports.answerByID = function(req, res, next, id) {
-	Answer.findById(id).populate('user', 'displayName').populate('question', 'name').exec(function(err, answer) {
+	Answer.findById(id).populate('user').populate('question').exec(function(err, answer) {
 		if (err) return next(err);
 		if (!answer) return next(new Error('Failed to load Answer ' + id));
 		req.answer = answer;

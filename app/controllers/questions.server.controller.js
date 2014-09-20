@@ -96,7 +96,7 @@ exports.delete = function(req, res) {
  * List of Questions
  */
 exports.list = function(req, res) {
-	Question.find().sort('-created').populate('user', 'displayName').exec(function(err, questions) {
+	Question.find(req.query).sort('-created').populate('user', 'displayName').exec(function(err, questions) {
 		if (err) {
 			return res.send(400, {
 				message: getErrorMessage(err)
