@@ -13,8 +13,12 @@ ApplicationConfiguration.registerModule('students')
                 templateUrl: 'modules/students/students.client.view.html'
             })
             .state('students2', {
-                url: '/students/step2',
+                url: '/questions/:id/record',
                 templateUrl: 'modules/students/students-record.client.view.html'
+            })
+            .state('students3', {
+                url: '/answers/:id/confirm',
+                templateUrl: 'modules/students/students-confirm.client.view.html'
             });
     }
 ])
@@ -25,7 +29,7 @@ ApplicationConfiguration.registerModule('students')
     function(Menus) {
         // Set top bar menu items
         Menus.addMenuItem('topbar', 'Students Area', 'students', null, null, ['student', 'teacher']);
-        Menus.addMenuItem('topbar', 'Students Step 2', 'students/step2', null, null, ['student', 'teacher']);
+        // Menus.addMenuItem('topbar', 'Students Step 2', 'students/step2', null, null, ['student', 'teacher']);
     }
 ])
 
@@ -115,9 +119,8 @@ ApplicationConfiguration.registerModule('students')
         var uploadUrl = 'upload';
 
 
-
-        $scope.usingFlash = FileAPI && FileAPI.upload != null;
-        $scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
+        $scope.usingFlash = window.FileAPI && window.FileAPI.upload != null;
+        $scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || window.FileAPI.html5 != false);
         $scope.uploadRightAway = true;
 
         $scope.hasUploader = function(index) {

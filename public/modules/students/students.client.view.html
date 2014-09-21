@@ -1,4 +1,4 @@
-<section ng-controller="StudentsController">
+<section ng-controller="StudentsController" ng-init="Questions.find()">
 
 
     <h1>INSTRUCTIONS</h1>
@@ -20,8 +20,16 @@
         </li>
     </ol>
 
+    <br> 
+    
+    <div class="form-group">
+        <label>Select a question</label>
+        <select class="form-control" ng-options="question._id as question.name for question in questions" ng-model="selectedQuestion">
+            <option value="">Select a question</option>
+        </select>
+    </div>
+    
 
-
-    <a ui-sref="students2" class="btn btn-lg btn-primary">START</a>
+    <a ng-href="#!/questions/{{selectedQuestion}}/record" class="btn btn-lg btn-primary">START</a>
 
 </section>

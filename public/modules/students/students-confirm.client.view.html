@@ -1,0 +1,44 @@
+<section data-ng-controller="AnswersController" data-ng-init="Answers.findOne()">
+
+    <h1>Question</h1>
+
+    <b ng-bind="answer.question.name"></b>
+    <p ng-bind="answer.question.content"></p>
+
+
+    <h1>Answer</h1>
+
+    <p><b>Content:</b> 
+        <span ng-bind="answer.description"></span>
+    </p>
+
+
+    <b>Video:</b>
+
+    <br>
+    <iframe width="420" height="315" ng-src="{{answer.videoDetails.embed}}" frameborder="0" allowfullscreen></iframe>
+
+
+    <br />
+    <br />
+
+    <small>
+        <em class="text-muted">Posted on
+            <span data-ng-bind="answer.created | date:'mediumDate'"></span>
+            by
+            <span data-ng-bind="answer.user.displayName"></span>
+        </em>
+    </small>
+
+    <br><br>
+    <br><br>
+
+    <button type="button" class="btn btn-primary">
+        SUBMIT
+    </button>
+
+    <button type="button" class="btn btn-default">
+        TRY AGAIN
+    </button>
+
+</section>

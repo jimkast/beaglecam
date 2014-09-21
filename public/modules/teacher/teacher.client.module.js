@@ -9,12 +9,8 @@ ApplicationConfiguration.registerModule('teacher')
         // Answers state routing
         $stateProvider
             .state('teacher1', {
-                url: '/teachers/step1',
+                url: '/teachers',
                 templateUrl: 'modules/teacher/teacher-step-1.client.view.html'
-            })
-            .state('teacher2', {
-                url: '/teachers/step2',
-                templateUrl: 'modules/teacher/teacher-step-2.client.view.html'
             });
     }
 ])
@@ -24,8 +20,8 @@ ApplicationConfiguration.registerModule('teacher')
 .run(['Menus',
     function(Menus) {
         // Set top bar menu items
-        Menus.addMenuItem('topbar', 'Teachers', 'teachers/step1', null, null, ['teacher']);
-        Menus.addMenuItem('topbar', 'Teachers Step 2', 'teachers/step2', null, null, ['teacher']);
+        Menus.addMenuItem('topbar', 'Teachers Area', 'teachers', null, null, ['teacher']);
+        // Menus.addMenuItem('topbar', 'Teachers Step 2', 'teachers/step2', null, null, ['teacher']);
     }
 ])
 

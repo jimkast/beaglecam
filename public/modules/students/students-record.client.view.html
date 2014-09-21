@@ -1,75 +1,244 @@
-<section>
-    <h2>step 2</h2>
+<section data-ng-controller="StudentsController2" data-ng-init="Questions.findOne()">
 
-    <script language="JavaScript">
+
+    <h1>Question</h1>
+
+    <span class="h3"><b>Title:</b> <span ng-bind="question.name"></span></span>
+
+
+    <br><br>
+    
+    <p><b>Description:</b> <span ng-bind="question.content"></span></p>
+
+
+    <p><b>Read Time:</b> <span ng-bind="question.readTime"></span> seconds</p>
+    <p><b>Record Time:</b> <span ng-bind="question.recordTime"></span> seconds</p>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <hr>
+    <hr>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <h1>Give an Answer...</h1>
+    <br>
+    <br>
+    <h2>Record from your Web Camera</h2>
+    <hr>
+
+
+    <style>
+    #webcam {
+        float: left;
+    }
+    #volumeMeter {
+        background-image: url('ledsbg.png');
+        width: 19px;
+        height: 133px;
+        padding-top: 5px;
+    }
+    #volumeMeter img {
+        padding-left: 4px;
+        padding-top: 1px;
+        display: block;
+    }
+    .ui-slider {
+        background: none;
+        background-image: url('trackslider.png');
+        border: 0;
+        height: 107px;
+        margin-top: 16px;
+    }
+    .ui-slider .ui-slider-handle {
+        width: 14px;
+        height: 32px;
+        margin-left: 7px;
+        margin-bottom: -16px;
+        background: url(volumeslider.png) no-repeat;
+    }
+    #volumePanel {
+        -moz-border-radius: 0px 5px 5px 0px;
+        border-radius: 0px 5px 5px 0px;
+        background-color: #4B4B4B;
+        width: 55px;
+        height: 160px;
+        -moz-box-shadow: 0px 3px 3px #333333;
+        -webkit-box-shadow: 0px 3px 3px #333333;
+        shadow: 0px 3px 3px #333333;
+    }
+    #setupPanel {
+        width: 400px;
+        height: 30px;
+        margin: 5px;
+    }
+    </style>
+    <script>
     $(document).ready(function() {
         $("#webcam").scriptcam({
-            showMicrophoneErrors: false,
-            onError: onError,
+            fileReady: fileReady,
             cornerRadius: 20,
             cornerColor: 'e3e5e2',
+            onError: onError,
+            promptWillShow: promptWillShow,
+            showMicrophoneErrors: false,
+            showDebug: true,
             onWebcamReady: onWebcamReady,
-            uploadImage: 'upload.gif',
-            onPictureAsBase64: base64_tofield_and_image
+            setVolume: setVolume,
+            timeLeft: timeLeft,
+            fileName: 'demo609571',
+            connected: showRecord
         });
+        setVolume(0);
+        // $("#slider").slider({
+        //     animate: true,
+        //     min: 0,
+        //     max: 100,
+        //     value: 50,
+        //     orientation: 'vertical',
+        //     disabled: true
+        // });
+        // $("#slider").bind("slidechange", function(event, ui) {
+        //     $.scriptcam.changeVolume($("#slider").slider("option", "value"));
+        // });
     });
 
-    function base64_tofield() {
-        $('#formfield').val($.scriptcam.getFrameAsBase64());
-    };
+    function showRecord() {
+        $("#recordStartButton").attr("disabled", false);
+    }
 
-    function base64_toimage() {
-        $('#image').attr("src", "data:image/png;base64," + $.scriptcam.getFrameAsBase64());
-    };
+    function startRecording() {
+        $("#recordStartButton").attr("disabled", true);
+        $("#recordStopButton").attr("disabled", false);
+        $("#recordPauseResumeButton").attr("disabled", false);
+        $.scriptcam.startRecording();
+    }
 
-    function base64_tofield_and_image(b64) {
-        $('#formfield').val(b64);
-        $('#image').attr("src", "data:image/png;base64," + b64);
-    };
+    function closeCamera() {
+        $("#slider").slider("option", "disabled", true);
+        $("#recordPauseResumeButton").attr("disabled", true);
+        $("#recordStopButton").attr("disabled", true);
+        $.scriptcam.closeCamera();
+        $('#message').html('Please wait for the file conversion to finish...');
+    }
+
+    function pauseResumeCamera() {
+        if ($("#recordPauseResumeButton").html() == 'Pause Recording') {
+            $("#recordPauseResumeButton").html("Resume Recording");
+            $.scriptcam.pauseRecording();
+        } else {
+            $("#recordPauseResumeButton").html("Pause Recording");
+            $.scriptcam.resumeRecording();
+        }
+    }
+
+    function fileReady(fileName) {
+        $('#recorder').hide();
+        fileName2 = fileName.replace('mp4', 'gif');
+        $('#message').html('The MP4 file is now dowloadable for five minutes over <a href="' + fileName + '">here</a>. The animated GIF can be downloaded <a href="' + fileName2 + '">here</a>.');
+        var fileNameNoExtension = fileName.replace(".mp4", "");
+        jwplayer("mediaplayer").setup({
+            width: 320,
+            height: 240,
+            file: fileName,
+            image: fileNameNoExtension + '_0000.jpg',
+            tracks: [{
+                file: fileNameNoExtension + '.vtt',
+                kind: 'thumbnails'
+            }]
+        });
+        $('#mediaplayer').show();
+    }
+
+    function onError(errorId, errorMsg) {
+        alert(errorMsg);
+    }
+
+    function onWebcamReady(cameraNames, camera, microphoneNames, microphone, volume) {
+        $("#slider").slider("option", "disabled", false);
+        $("#slider").slider("option", "value", volume);
+        $.each(cameraNames, function(index, text) {
+            $('#cameraNames').append($('<option></option>').val(index).html(text))
+        });
+        $('#cameraNames').val(camera);
+        $.each(microphoneNames, function(index, text) {
+            $('#microphoneNames').append($('<option></option>').val(index).html(text))
+        });
+        $('#microphoneNames').val(microphone);
+    }
+
+    function promptWillShow() {
+        alert('A security dialog will be shown. Please click on ALLOW.');
+    }
+
+    function setVolume(value) {
+        value = parseInt(32 * value / 100) + 1;
+        for (var i = 1; i < value; i++) {
+            $('#LedBar' + i).css('visibility', 'visible');
+        }
+        for (i = value; i < 33; i++) {
+            $('#LedBar' + i).css('visibility', 'hidden');
+        }
+    }
+
+    function timeLeft(value) {
+        $('#timeLeft').val(value);
+    }
 
     function changeCamera() {
         $.scriptcam.changeCamera($('#cameraNames').val());
     }
 
-    function onError(errorId, errorMsg) {
-        $("#btn1").attr("disabled", true);
-        $("#btn2").attr("disabled", true);
-        alert(errorMsg);
-    }
-
-    function onWebcamReady(cameraNames, camera, microphoneNames, microphone, volume) {
-        $.each(cameraNames, function(index, text) {
-            $('#cameraNames').append($('<option></option>').val(index).html(text))
-        });
-        $('#cameraNames').val(camera);
+    function changeMicrophone() {
+        $.scriptcam.changeMicrophone($('#microphoneNames').val());
     }
     </script>
 
-    <div style="width:330px;float:left;">
-        <div id="webcam">
+    <div id="message"></div>
+    <div id="recorder">
+
+
+
+        <h4>Camera Area</h4>
+        <div style="float:left;border:4px solid red">
+            <div id="webcam">
+            </div>
         </div>
-        <div style="margin:5px;">
-            <img src="webcamlogo.png" style="vertical-align:text-top" />
-            <select id="cameraNames" size="1" onChange="changeCamera()" style="width:245px;font-size:10px;height:25px;">
+        <div id="volumePanel" style="float:left;position:relative;top:10px;display:none">
+            <div id="volumeMeter" style="position:absolute;top:10px;left:7px;float:left;">
+
+            </div>
+            <div id="slider" style="position:absolute;top:10px;left:30px;">
+            </div>
+        </div>
+        <br clear="both" />
+        <br>
+        <div id="setupPanel">
+            <img src="modules/students/img/webcamlogo.png" style="vertical-align:text-top" />
+            <select id="cameraNames" size="1" onChange="changeCamera()" style="width:145px;font-size:10px;height:25px;">
+            </select>
+            <img src="modules/students/img/miclogo.png" style="vertical-align:text-top;padding-left:45px;" />
+            <select id="microphoneNames" size="1" onChange="changeMicrophone()" style="width:128px;font-size:10px;height:25px;">
             </select>
         </div>
+        <br/>
+        <button id="recordStartButton" class="btn btn-small" onclick="startRecording()" disabled>Start Recording</button>&nbsp;
+        <span style="padding-left:5px;padding-right:5px;">
+            Time left:
+            <input type="text" id="timeLeft" style="width:50px;font-size:10px;" data-ng-model="question.timeLeft">&nbsp;
+
+        </span>
+        <button id="recordPauseResumeButton" class="btn btn-small" onclick="pauseResumeCamera()" disabled>Pause Recording</button>
+        <button id="recordStopButton" class="btn btn-small" onclick="closeCamera()" disabled>Stop Recording</button>
     </div>
-    <div style="width:135px;float:left;">
-        <p>
-            <button class="btn btn-small" id="btn1" onclick="base64_tofield()">Snapshot to form</button>
-        </p>
-        <p>
-            <button class="btn btn-small" id="btn2" onclick="base64_toimage()">Snapshot to image</button>
-        </p>
-    </div>
-    <div style="width:200px;float:left;">
-        <p>
-            <textarea id="formfield" style="width:190px;height:70px;"></textarea>
-        </p>
-        <p>
-            <img id="image" style="width:200px;height:153px;" />
-        </p>
-    </div>
+    <div id="mediaplayer" style="display:none;"></div>
 
 
 
@@ -83,6 +252,10 @@
     <br>
     <br>
     <br>
+
+
+    <span class="h4">- OR -</span>
+
     <br>
     <br>
 
@@ -113,51 +286,77 @@
     };
     </script>
 
-    <div ng-controller="StudentsController2">
+
+
+
+
+    <div>
 
         <div class="upload-div">
-            http method:
-            <input type="radio" ng-model="httpMethod" ng-init="httpMethod = 'POST'" value="POST" />post
-            <input type="radio" ng-model="httpMethod" value='PUT' ng-disabled="usingFlash" />put
-            <br/>
-            <br/>How to upload:
-            <br/>
-            <label>
-                <input type="radio" name="howToSend" ng-model="howToSend" value="1" ng-init="howToSend = 1">Multipart/form-data upload using $upload.upload() service cross browser</label>
-            <br/>
-            <label>
-                <input type="radio" name="howToSend" ng-model="howToSend" value="2" ng-disabled="!fileReaderSupported || usingFlash">File binary content with the file type as Content-Type header using $upload.http() service</label>
-            <div class="sub">The second option could be used to upload files to <a href="https://github.com/danialfarid/angular-file-upload/issues/88">CouchDB</a>,
-                <a href="https://github.com/danialfarid/angular-file-upload/issues/87">imgur</a>, etc... for HTML5 FileReader browsers.
+
+
+            <h1>Upload a Video</h1>
+            <hr>
+
+            <div style="display:none">
+                http method:
+                <input type="radio" ng-model="httpMethod" ng-init="httpMethod = 'POST'" value="POST" />post
+                <input type="radio" ng-model="httpMethod" value='PUT' ng-disabled="usingFlash" />put
+                <br/>
+                <br/>How to upload:
+                <br/>
+                <label>
+                    <input type="radio" name="howToSend" ng-model="howToSend" value="1" ng-init="howToSend = 1">Multipart/form-data upload using $upload.upload() service cross browser</label>
+                <br/>
+                <label>
+                    <input type="radio" name="howToSend" ng-model="howToSend" value="2" ng-disabled="!fileReaderSupported || usingFlash">File binary content with the file type as Content-Type header using $upload.http() service</label>
+                <div class="sub">The second option could be used to upload files to <a href="https://github.com/danialfarid/angular-file-upload/issues/88">CouchDB</a>,
+                    <a href="https://github.com/danialfarid/angular-file-upload/issues/87">imgur</a>, etc... for HTML5 FileReader browsers.
+                    <br/>
+                </div>
+                <br/>myModel:
+                <input type="text" ng-model="myModel">model object to be sent with the file.
                 <br/>
             </div>
-            <br/>myModel:
-            <input type="text" ng-model="myModel">model object to be sent with the file.
-            <br/>
             <div class="upload-buttons">
-                choose a single file:
+                Upload a Video:
                 <input type="file" ng-file-select="onFileSelect($files)" onclick="this.value=null">
-                <br/>or multiple files: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null">
-                <br/>or only images: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null" accept="image/*">
+                <div style="display:none">
+
+                    <br/>or multiple files: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null">
+
+
+                    <br/>or only images: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null" accept="image/*">
+                </div>
             </div>
-            You can have any element as an upload button:
-            <div ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
+
+            <div style="display:none">
+                You can have any element as an upload button:
+                <div ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
+            </div>
+
             <br/>
             <br/>
             <!-- ng-file-drag-over-class and ng-file-drag-over-delay are optional for styling and css transition handling #277 -->
-            <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true" ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100">or drop files
-                <div>here</div>
+            <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true" ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100">or drop a video file here
             </div>
+
             <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
-            <br/>
-            <input type="checkbox" ng-model="uploadRightAway">Upload right away
-            <br/>
-            <input type="checkbox" ng-model="generateErrorOnServer">Make server return error code:
-            <input type="text" ng-model="serverErrorCode">message:
-            <input type="text" ng-model="serverErrorMsg">
-            <br/>
+
+
+            <div style="display:none">
+                <br/>
+                <input type="checkbox" ng-model="uploadRightAway">Upload right away
+                <br/>
+                <input type="checkbox" ng-model="generateErrorOnServer">Make server return error code:
+                <input type="text" ng-model="serverErrorCode">message:
+                <input type="text" ng-model="serverErrorMsg">
+                <br/>
+            </div>
+
+
             <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
             <br/>Progress:
             <br/>
@@ -191,8 +390,7 @@
                 </ul>
             </div>
         </div>
-        <a style="position:fixed;bottom:10px;right:10px;font-size:smaller;" href="https://github.com/danialfarid/angular-file-upload/issues/new">Feedback/Issues</a>
-        <div style="position:fixed;bottom:30px;right:10px;font-size:smaller;color:#777">Last update: 2014-07-29</div>
+
 
     </div>
 

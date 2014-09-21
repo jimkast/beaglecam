@@ -34,6 +34,7 @@ module.exports = {
 
 				'public/lib/ScriptCam-master/scriptcam.js',
 				'public/lib/ScriptCam-master/swfobject.js',
+				'public/lib/ScriptCam-master/jwplayer.js',
 
 				'public/lib/ng-file-upload/angular-file-upload.js'
 

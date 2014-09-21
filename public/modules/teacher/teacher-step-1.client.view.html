@@ -2,8 +2,11 @@
 
     <br>
     <br>
+    
+    <h1>Teachers Area</h1>
+    <hr>
     <br>
-    <br>
+
 
 
     <div class="row" ng-init="Questions.find()">
@@ -17,6 +20,7 @@
             <br>
             <br>
 
+            <b>Select a question to filter answers:</b>
             <ul>
                 <li>
                     <a href="" ng-click="questions.selectedQuestion = ''" ng-class="{'text-danger': !questions.selectedQuestion}">
@@ -45,9 +49,12 @@
                 <li ng-repeat="answer in answers | filter: {'question': questions.selectedQuestion}">
                     <a href="#!/answers/{{answer._id}}">
                     	<img ng-src="{{yt.getThumbnails(yt.videoIdFromUrl(answer.video))[1]}}" />
-                        <span ng-bind="answer.description"></span>
                         <br>
-                        <small ng-bind="answer.user.displayName"></small>
+
+                        <b>Q:</b> <span ng-bind="answer.question.name"></span><br>
+                        <p><b>A:</b> <b ng-bind="answer.description"></b></p>
+                        <small>by: <i ng-bind="answer.user.displayName"></i></small>
+                        <hr>
                     </a>
                 </li>
             </ul>

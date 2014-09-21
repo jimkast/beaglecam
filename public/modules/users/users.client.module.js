@@ -68,13 +68,17 @@ ApplicationConfiguration.registerModule('users')
 
 .factory('Authentication', [
 	function() {
-		var _this = this;
+		var that = this;
 
-		_this._data = {
-			user: window.user
+		that._data = {
+			user: window.user,
+
+			hasRole: function(role){
+				return user.roles.indexOf(role) > -1;
+			}
 		};
 
-		return _this._data;
+		return that._data;
 	}
 ])
 

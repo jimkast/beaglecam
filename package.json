@@ -40,7 +40,9 @@
     "validator": "^3.18.1",
     "connect-multiparty": "^1.2.4",
     "multiparty": "^3.3.2",
-    "googleapis": "^1.0.14"
+    "googleapis": "^1.0.14",
+    "node-youtube-resumable-upload": "0.0.3",
+    "google-auth-cli": "0.0.1"
   },
   "devDependencies": {
     "supertest": "~0.10.0",

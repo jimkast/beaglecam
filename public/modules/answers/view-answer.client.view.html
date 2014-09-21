@@ -50,6 +50,8 @@
         <p ng-bind="answer.user.bio"></p>
 
 
+        <h3>All user answers</h3>
+        <hr>
         <ul data-ng-init="Answers.find({'user': answer.user._id})">
 
             <li ng-repeat="ans in answers | orderBy: 'question.name' | groupBy:['question._id']">
@@ -65,7 +67,7 @@
     <br>
     <br>
 
-    <div>
+    <div data-ng-show="authentication.hasRole('teacher')">
 
         <h2>Teacher's Area</h2>
         <b>Put a grade: <span class="h1" data-ng-bind="grade.value"></span></b>
@@ -77,5 +79,8 @@
 
     </div>
 
+    <br>
+    <br>
+    <br>
 
 </section>
