@@ -32,7 +32,6 @@ ApplicationConfiguration.registerModule('crud')
             that.init = function() {
                 that.list = [];
                 that.single = {};
-                that.error;
 
                 return that;
             }

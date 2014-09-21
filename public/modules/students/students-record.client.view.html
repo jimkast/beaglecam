@@ -1,0 +1,199 @@
+<section>
+    <h2>step 2</h2>
+
+    <script language="JavaScript">
+    $(document).ready(function() {
+        $("#webcam").scriptcam({
+            showMicrophoneErrors: false,
+            onError: onError,
+            cornerRadius: 20,
+            cornerColor: 'e3e5e2',
+            onWebcamReady: onWebcamReady,
+            uploadImage: 'upload.gif',
+            onPictureAsBase64: base64_tofield_and_image
+        });
+    });
+
+    function base64_tofield() {
+        $('#formfield').val($.scriptcam.getFrameAsBase64());
+    };
+
+    function base64_toimage() {
+        $('#image').attr("src", "data:image/png;base64," + $.scriptcam.getFrameAsBase64());
+    };
+
+    function base64_tofield_and_image(b64) {
+        $('#formfield').val(b64);
+        $('#image').attr("src", "data:image/png;base64," + b64);
+    };
+
+    function changeCamera() {
+        $.scriptcam.changeCamera($('#cameraNames').val());
+    }
+
+    function onError(errorId, errorMsg) {
+        $("#btn1").attr("disabled", true);
+        $("#btn2").attr("disabled", true);
+        alert(errorMsg);
+    }
+
+    function onWebcamReady(cameraNames, camera, microphoneNames, microphone, volume) {
+        $.each(cameraNames, function(index, text) {
+            $('#cameraNames').append($('<option></option>').val(index).html(text))
+        });
+        $('#cameraNames').val(camera);
+    }
+    </script>
+
+    <div style="width:330px;float:left;">
+        <div id="webcam">
+        </div>
+        <div style="margin:5px;">
+            <img src="webcamlogo.png" style="vertical-align:text-top" />
+            <select id="cameraNames" size="1" onChange="changeCamera()" style="width:245px;font-size:10px;height:25px;">
+            </select>
+        </div>
+    </div>
+    <div style="width:135px;float:left;">
+        <p>
+            <button class="btn btn-small" id="btn1" onclick="base64_tofield()">Snapshot to form</button>
+        </p>
+        <p>
+            <button class="btn btn-small" id="btn2" onclick="base64_toimage()">Snapshot to image</button>
+        </p>
+    </div>
+    <div style="width:200px;float:left;">
+        <p>
+            <textarea id="formfield" style="width:190px;height:70px;"></textarea>
+        </p>
+        <p>
+            <img id="image" style="width:200px;height:153px;" />
+        </p>
+    </div>
+
+
+
+
+
+
+
+
+
+    <br style="clear:both">
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <!--     <div ng-controller="StudentsController">
+        <input type="text" ng-model="myModelObj">
+        <input type="file" ng-file-select="onFileSelect($files)">
+        <input type="file" ng-file-select="onFileSelect($files)" multiple accept="image/*">
+        <div class="button" ng-file-select="onFileSelect($files)" data-multiple="true"></div>
+        <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="dragover" ng-show="dropSupported" class="drop-box">drop files here</div>
+        <div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
+        <button ng-click="upload.abort()">Cancel Upload</button>
+    </div>
+
+ -->
+    <script type="text/javascript">
+    FileAPI = {
+        debug: true,
+        //forceLoad: true, html5: false //to debug flash in HTML5 browsers
+        //wrapInsideDiv: true, //experimental for fixing css issues
+        //only one of jsPath or jsUrl.
+        //jsPath: '/js/FileAPI.min.js/folder/', 
+        //jsUrl: 'yourcdn.com/js/FileAPI.min.js',
+
+        //only one of staticPath or flashUrl.
+        //staticPath: '/flash/FileAPI.flash.swf/folder/'
+        //flashUrl: 'yourcdn.com/js/FileAPI.flash.swf'
+    };
+    </script>
+
+    <div ng-controller="StudentsController2">
+
+        <div class="upload-div">
+            http method:
+            <input type="radio" ng-model="httpMethod" ng-init="httpMethod = 'POST'" value="POST" />post
+            <input type="radio" ng-model="httpMethod" value='PUT' ng-disabled="usingFlash" />put
+            <br/>
+            <br/>How to upload:
+            <br/>
+            <label>
+                <input type="radio" name="howToSend" ng-model="howToSend" value="1" ng-init="howToSend = 1">Multipart/form-data upload using $upload.upload() service cross browser</label>
+            <br/>
+            <label>
+                <input type="radio" name="howToSend" ng-model="howToSend" value="2" ng-disabled="!fileReaderSupported || usingFlash">File binary content with the file type as Content-Type header using $upload.http() service</label>
+            <div class="sub">The second option could be used to upload files to <a href="https://github.com/danialfarid/angular-file-upload/issues/88">CouchDB</a>,
+                <a href="https://github.com/danialfarid/angular-file-upload/issues/87">imgur</a>, etc... for HTML5 FileReader browsers.
+                <br/>
+            </div>
+            <br/>myModel:
+            <input type="text" ng-model="myModel">model object to be sent with the file.
+            <br/>
+            <div class="upload-buttons">
+                choose a single file:
+                <input type="file" ng-file-select="onFileSelect($files)" onclick="this.value=null">
+                <br/>or multiple files: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null">
+                <br/>or only images: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null" accept="image/*">
+            </div>
+            You can have any element as an upload button:
+            <div ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
+            <br/>
+            <br/>
+            <!-- ng-file-drag-over-class and ng-file-drag-over-delay are optional for styling and css transition handling #277 -->
+            <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true" ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100">or drop files
+                <div>here</div>
+            </div>
+            <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+            <br/>
+            <input type="checkbox" ng-model="uploadRightAway">Upload right away
+            <br/>
+            <input type="checkbox" ng-model="generateErrorOnServer">Make server return error code:
+            <input type="text" ng-model="serverErrorCode">message:
+            <input type="text" ng-model="serverErrorMsg">
+            <br/>
+            <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
+            <br/>Progress:
+            <br/>
+            <br/>
+            <div ng-show="selectedFiles != null">
+                <div class="sel-file" ng-repeat="f in selectedFiles">
+                    {{($index + 1) + '.'}}
+                    <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
+                    <button class="button" ng-click="start($index)" ng-show="progress[$index] < 0">Start</button>
+                    <span class="progress" ng-show="progress[$index] >= 0">
+                        <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
+                    </span>
+                    <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
+                    {{f.name}} - size: {{f.size}}B - type: {{f.type}}
+                </div>
+            </div>
+            <div class="response" ng-show="uploadResult.length > 0">
+                Server Response:
+                <ul>
+                    <li ng-repeat="result in uploadResult">
+                        <ul>
+                            <li ng-repeat="item in result.result">
+                                <div data-ng-show="item.name">file name: {{item.name}}</div>
+                                <div data-ng-show="item.fieldName">name: {{item.fieldName}}</div>
+                                <div data-ng-show="item.size">size on the serve: {{item.size}}</div>
+                                <div data-ng-show="item.value">value: {{item.value}}</div>
+                            </li>
+                        </ul>
+                        <div data-ng-show="result.requestHeaders" class="reqh">request headers: {{result.requestHeaders}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <a style="position:fixed;bottom:10px;right:10px;font-size:smaller;" href="https://github.com/danialfarid/angular-file-upload/issues/new">Feedback/Issues</a>
+        <div style="position:fixed;bottom:30px;right:10px;font-size:smaller;color:#777">Last update: 2014-07-29</div>
+
+    </div>
+
+</section>

@@ -14,6 +14,10 @@ module.exports = _.extend(
     require('./env/' + process.env.NODE_ENV) || {}
 );
 
+
+module.exports.uploadDirectory = 'tmp';
+
+
 /**
  * Get files by glob patterns
  */

@@ -17,6 +17,11 @@ module.exports = {
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
 			],
 			js: [
+				'public/lib/lodash/lodash.min.js',
+				'public/lib/jquery/dist/jquery-1.9.1.js',
+
+				'public/lib/ng-file-upload/angular-file-upload-shim.js',				
+
 				'public/lib/angular/angular.js',
 				'public/lib/angular-resource/angular-resource.js', 
 				'public/lib/angular-cookies/angular-cookies.js',  
@@ -26,7 +31,13 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-				'public/lib/lodash/lodash.min.js'
+
+				'public/lib/ScriptCam-master/scriptcam.js',
+				'public/lib/ScriptCam-master/swfobject.js',
+
+				'public/lib/ng-file-upload/angular-file-upload.js'
+
+
 			]
 		},
 		css: [
