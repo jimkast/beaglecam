@@ -14,7 +14,8 @@ var ApplicationConfiguration = (function() {
 		'ui.bootstrap',
 		'ui.utils',
 
-		'angularFileUpload'
+		'angularFileUpload',
+		'webcam'
 	];
 
 	// Add a new vertical module

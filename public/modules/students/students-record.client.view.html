@@ -1,18 +1,43 @@
+<section ng-controller="WebcamController">
+
+    <webcam on-stream="onStream(stream,video)"
+            on-access-denied="onError(err)"
+            on-streaming="onSuccess(video)"
+            placeholder="'img/ajax-loader.gif'">
+    </webcam>
+
+
+    <div class="demos ng-scope" ng-show="showDemos">
+        <h1>Show Demos</h1>
+    </div>
+
+
+</section>
+
+
+
 <section data-ng-controller="StudentsController2" data-ng-init="Questions.findOne()">
 
 
     <h1>Question</h1>
 
-    <span class="h3"><b>Title:</b> <span ng-bind="question.name"></span></span>
+    <span class="h3"><b>Title:</b> 
+        <span ng-bind="question.name"></span>
+    </span>
 
 
-    <br><br>
-    
-    <p><b>Description:</b> <span ng-bind="question.content"></span></p>
+    <br>
+    <br>
+
+    <p><b>Description:</b> 
+        <span ng-bind="question.content"></span>
+    </p>
 
 
-    <p><b>Read Time:</b> <span ng-bind="question.readTime"></span> seconds</p>
-    <p><b>Record Time:</b> <span ng-bind="question.recordTime"></span> seconds</p>
+    <p><b>Read Time:</b> 
+        <span ng-bind="question.readTime"></span>seconds</p>
+    <p><b>Record Time:</b> 
+        <span ng-bind="question.recordTime"></span>seconds</p>
 
 
     <br>
@@ -31,218 +56,175 @@
     <h1>Give an Answer...</h1>
     <br>
     <br>
-    <h2>Record from your Web Camera</h2>
-    <hr>
 
+    <!--  ========= RECORD ============ -->
+    <div>
+        <h2>Record from your Web Camera</h2>
+        <hr>
 
-    <style>
-    #webcam {
-        float: left;
-    }
-    #volumeMeter {
-        background-image: url('ledsbg.png');
-        width: 19px;
-        height: 133px;
-        padding-top: 5px;
-    }
-    #volumeMeter img {
-        padding-left: 4px;
-        padding-top: 1px;
-        display: block;
-    }
-    .ui-slider {
-        background: none;
-        background-image: url('trackslider.png');
-        border: 0;
-        height: 107px;
-        margin-top: 16px;
-    }
-    .ui-slider .ui-slider-handle {
-        width: 14px;
-        height: 32px;
-        margin-left: 7px;
-        margin-bottom: -16px;
-        background: url(volumeslider.png) no-repeat;
-    }
-    #volumePanel {
-        -moz-border-radius: 0px 5px 5px 0px;
-        border-radius: 0px 5px 5px 0px;
-        background-color: #4B4B4B;
-        width: 55px;
-        height: 160px;
-        -moz-box-shadow: 0px 3px 3px #333333;
-        -webkit-box-shadow: 0px 3px 3px #333333;
-        shadow: 0px 3px 3px #333333;
-    }
-    #setupPanel {
-        width: 400px;
-        height: 30px;
-        margin: 5px;
-    }
-    </style>
-    <script>
-    $(document).ready(function() {
-        $("#webcam").scriptcam({
-            fileReady: fileReady,
-            cornerRadius: 20,
-            cornerColor: 'e3e5e2',
-            onError: onError,
-            promptWillShow: promptWillShow,
-            showMicrophoneErrors: false,
-            showDebug: true,
-            onWebcamReady: onWebcamReady,
-            setVolume: setVolume,
-            timeLeft: timeLeft,
-            fileName: 'demo609571',
-            connected: showRecord
-        });
-        setVolume(0);
-        // $("#slider").slider({
-        //     animate: true,
-        //     min: 0,
-        //     max: 100,
-        //     value: 50,
-        //     orientation: 'vertical',
-        //     disabled: true
-        // });
-        // $("#slider").bind("slidechange", function(event, ui) {
-        //     $.scriptcam.changeVolume($("#slider").slider("option", "value"));
-        // });
-    });
+        <!--
+        <script>
+            $(document).ready(function() {
+                $("#webcam").scriptcam({
+                    fileReady: fileReady,
+                    cornerRadius: 20,
+                    cornerColor: 'e3e5e2',
+                    onError: onError,
+                    // promptWillShow: promptWillShow,
+                    showMicrophoneErrors: false,
+                    showDebug: true,
+                    onWebcamReady: onWebcamReady,
+                    setVolume: setVolume,
+                    timeLeft: timeLeft,
+                    fileName: 'demo609571',
+                    connected: showRecord
+                });
+                setVolume(0);
+                // $("#slider").slider({
+                //     animate: true,
+                //     min: 0,
+                //     max: 100,
+                //     value: 50,
+                //     orientation: 'vertical',
+                //     disabled: true
+                // });
+                // $("#slider").bind("slidechange", function(event, ui) {
+                //     $.scriptcam.changeVolume($("#slider").slider("option", "value"));
+                // });
+            });
 
-    function showRecord() {
-        $("#recordStartButton").attr("disabled", false);
-    }
+            function showRecord() {
+                $("#recordStartButton").attr("disabled", false);
+            }
 
-    function startRecording() {
-        $("#recordStartButton").attr("disabled", true);
-        $("#recordStopButton").attr("disabled", false);
-        $("#recordPauseResumeButton").attr("disabled", false);
-        $.scriptcam.startRecording();
-    }
+            function startRecording() {
+                $("#recordStartButton").attr("disabled", true);
+                $("#recordStopButton").attr("disabled", false);
+                $("#recordPauseResumeButton").attr("disabled", false);
+                $.scriptcam.startRecording();
+            }
 
-    function closeCamera() {
-        $("#slider").slider("option", "disabled", true);
-        $("#recordPauseResumeButton").attr("disabled", true);
-        $("#recordStopButton").attr("disabled", true);
-        $.scriptcam.closeCamera();
-        $('#message').html('Please wait for the file conversion to finish...');
-    }
+            function closeCamera() {
+                $("#slider").slider("option", "disabled", true);
+                $("#recordPauseResumeButton").attr("disabled", true);
+                $("#recordStopButton").attr("disabled", true);
+                $.scriptcam.closeCamera();
+                $('#message').html('Please wait for the file conversion to finish...');
+            }
 
-    function pauseResumeCamera() {
-        if ($("#recordPauseResumeButton").html() == 'Pause Recording') {
-            $("#recordPauseResumeButton").html("Resume Recording");
-            $.scriptcam.pauseRecording();
-        } else {
-            $("#recordPauseResumeButton").html("Pause Recording");
-            $.scriptcam.resumeRecording();
-        }
-    }
+            function pauseResumeCamera() {
+                if ($("#recordPauseResumeButton").html() == 'Pause Recording') {
+                    $("#recordPauseResumeButton").html("Resume Recording");
+                    $.scriptcam.pauseRecording();
+                } else {
+                    $("#recordPauseResumeButton").html("Pause Recording");
+                    $.scriptcam.resumeRecording();
+                }
+            }
 
-    function fileReady(fileName) {
-        $('#recorder').hide();
-        fileName2 = fileName.replace('mp4', 'gif');
-        $('#message').html('The MP4 file is now dowloadable for five minutes over <a href="' + fileName + '">here</a>. The animated GIF can be downloaded <a href="' + fileName2 + '">here</a>.');
-        var fileNameNoExtension = fileName.replace(".mp4", "");
-        jwplayer("mediaplayer").setup({
-            width: 320,
-            height: 240,
-            file: fileName,
-            image: fileNameNoExtension + '_0000.jpg',
-            tracks: [{
-                file: fileNameNoExtension + '.vtt',
-                kind: 'thumbnails'
-            }]
-        });
-        $('#mediaplayer').show();
-    }
+            function fileReady(fileName) {
+                $('#recorder').hide();
+                fileName2 = fileName.replace('mp4', 'gif');
+                $('#message').html('The MP4 file is now dowloadable for five minutes over <a href="' + fileName + '">here</a>. The animated GIF can be downloaded <a href="' + fileName2 + '">here</a>.');
+                var fileNameNoExtension = fileName.replace(".mp4", "");
+                jwplayer("mediaplayer").setup({
+                    width: 320,
+                    height: 240,
+                    file: fileName,
+                    image: fileNameNoExtension + '_0000.jpg',
+                    tracks: [{
+                        file: fileNameNoExtension + '.vtt',
+                        kind: 'thumbnails'
+                    }]
+                });
+                $('#mediaplayer').show();
+            }
 
-    function onError(errorId, errorMsg) {
-        alert(errorMsg);
-    }
+            function onError(errorId, errorMsg) {
+                alert(errorMsg);
+            }
 
-    function onWebcamReady(cameraNames, camera, microphoneNames, microphone, volume) {
-        $("#slider").slider("option", "disabled", false);
-        $("#slider").slider("option", "value", volume);
-        $.each(cameraNames, function(index, text) {
-            $('#cameraNames').append($('<option></option>').val(index).html(text))
-        });
-        $('#cameraNames').val(camera);
-        $.each(microphoneNames, function(index, text) {
-            $('#microphoneNames').append($('<option></option>').val(index).html(text))
-        });
-        $('#microphoneNames').val(microphone);
-    }
+            function onWebcamReady(cameraNames, camera, microphoneNames, microphone, volume) {
+                console.log(cameraNames, camera, microphoneNames, microphone, volume, 'aaaaaaaaaaa')
+                $("#slider").slider("option", "disabled", false);
+                $("#slider").slider("option", "value", volume);
+                $.each(cameraNames, function(index, text) {
+                    $('#cameraNames').append($('<option></option>').val(index).html(text))
+                });
+                $('#cameraNames').val(camera);
+                $.each(microphoneNames, function(index, text) {
+                    $('#microphoneNames').append($('<option></option>').val(index).html(text))
+                });
+                $('#microphoneNames').val(microphone);
+            }
 
-    function promptWillShow() {
-        alert('A security dialog will be shown. Please click on ALLOW.');
-    }
+            function promptWillShow() {
+                alert('A security dialog will be shown. Please click on ALLOW.');
+            }
 
-    function setVolume(value) {
-        value = parseInt(32 * value / 100) + 1;
-        for (var i = 1; i < value; i++) {
-            $('#LedBar' + i).css('visibility', 'visible');
-        }
-        for (i = value; i < 33; i++) {
-            $('#LedBar' + i).css('visibility', 'hidden');
-        }
-    }
+            function setVolume(value) {
+                value = parseInt(32 * value / 100) + 1;
+                for (var i = 1; i < value; i++) {
+                    $('#LedBar' + i).css('visibility', 'visible');
+                }
+                for (i = value; i < 33; i++) {
+                    $('#LedBar' + i).css('visibility', 'hidden');
+                }
+            }
 
-    function timeLeft(value) {
-        $('#timeLeft').val(value);
-    }
+            function timeLeft(value) {
+                $('#timeLeft').val(value);
+            }
 
-    function changeCamera() {
-        $.scriptcam.changeCamera($('#cameraNames').val());
-    }
+            function changeCamera() {
+                $.scriptcam.changeCamera($('#cameraNames').val());
+            }
 
-    function changeMicrophone() {
-        $.scriptcam.changeMicrophone($('#microphoneNames').val());
-    }
-    </script>
+            function changeMicrophone() {
+                $.scriptcam.changeMicrophone($('#microphoneNames').val());
+            }
+        </script>
+    -->
+        <div id="message"></div>
+        <div id="recorder">
 
-    <div id="message"></div>
-    <div id="recorder">
-
-
-
-        <h4>Camera Area</h4>
-        <div style="float:left;border:4px solid red">
-            <div id="webcam">
+            <h4>Camera Area</h4>
+            <div style="float:left;border:4px solid red">
+                <div id="webcam">
+                </div>
             </div>
-        </div>
-        <div id="volumePanel" style="float:left;position:relative;top:10px;display:none">
-            <div id="volumeMeter" style="position:absolute;top:10px;left:7px;float:left;">
+            <div id="volumePanel" style="float:left;position:relative;top:10px;display:none">
+                <div id="volumeMeter" style="position:absolute;top:10px;left:7px;float:left;">
 
+                </div>
+                <div id="slider" style="position:absolute;top:10px;left:30px;">
+                </div>
             </div>
-            <div id="slider" style="position:absolute;top:10px;left:30px;">
+            <br clear="both" />
+            <br>
+            <div id="setupPanel">
+                <img src="modules/students/img/webcamlogo.png" style="vertical-align:text-top" />
+                <select id="cameraNames" size="1" onChange="changeCamera()" style="width:145px;font-size:10px;height:25px;">
+                </select>
+                <img src="modules/students/img/miclogo.png" style="vertical-align:text-top;padding-left:45px;" />
+                <select id="microphoneNames" size="1" onChange="changeMicrophone()" style="width:128px;font-size:10px;height:25px;">
+                </select>
             </div>
-        </div>
-        <br clear="both" />
-        <br>
-        <div id="setupPanel">
-            <img src="modules/students/img/webcamlogo.png" style="vertical-align:text-top" />
-            <select id="cameraNames" size="1" onChange="changeCamera()" style="width:145px;font-size:10px;height:25px;">
-            </select>
-            <img src="modules/students/img/miclogo.png" style="vertical-align:text-top;padding-left:45px;" />
-            <select id="microphoneNames" size="1" onChange="changeMicrophone()" style="width:128px;font-size:10px;height:25px;">
-            </select>
-        </div>
-        <br/>
-        <button id="recordStartButton" class="btn btn-small" onclick="startRecording()" disabled>Start Recording</button>&nbsp;
-        <span style="padding-left:5px;padding-right:5px;">
-            Time left:
-            <input type="text" id="timeLeft" style="width:50px;font-size:10px;" data-ng-model="question.timeLeft">&nbsp;
+            <br/>
+            <button id="recordStartButton" class="btn btn-small" onclick="startRecording()" disabled>Start Recording</button>&nbsp;
+            <span style="padding-left:5px;padding-right:5px;">
+                Time left:
+                <input type="text" id="timeLeft" style="width:50px;font-size:10px;" data-ng-model="question.timeLeft">&nbsp;
 
-        </span>
-        <button id="recordPauseResumeButton" class="btn btn-small" onclick="pauseResumeCamera()" disabled>Pause Recording</button>
-        <button id="recordStopButton" class="btn btn-small" onclick="closeCamera()" disabled>Stop Recording</button>
+            </span>
+            <button id="recordPauseResumeButton" class="btn btn-small" onclick="pauseResumeCamera()" disabled>Pause Recording</button>
+            <button id="recordStopButton" class="btn btn-small" onclick="closeCamera()" disabled>Stop Recording</button>
+        </div>
+        <div id="mediaplayer" style="display:none;"></div>
+
+
     </div>
-    <div id="mediaplayer" style="display:none;"></div>
-
-
-
-
+    <!--  ========= RECORD END ============ -->
 
 
 
