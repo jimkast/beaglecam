@@ -42,9 +42,9 @@ ApplicationConfiguration.registerModule('answers')
 
 .factory('Answers', ['baseCRUD', 'YouTube', '$sce',
     function(baseCRUD, YouTube, $sce) {
-        var resource = new baseCRUD('answers');
+        var Resource = new baseCRUD('answers');
 
-        resource.callbacks.findOne.after = function(answer) {
+        Resource.callbacks.findOne.after = function(answer) {
             answer.videoDetails = {
                 embed: $sce.trustAsResourceUrl(
                     YouTube.embedUrlFromID(
@@ -53,11 +53,11 @@ ApplicationConfiguration.registerModule('answers')
                         )
                     )
                 )
-            }
+            };
 
-        }
+        };
 
-        return resource;
+        return Resource;
     }
 ])
 

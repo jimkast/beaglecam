@@ -39,7 +39,7 @@ ApplicationConfiguration.registerModule('students')
     function($scope, $upload, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
         $scope.authentication = Authentication;
 
-        $scope.yt = new youtube();
+        $scope.YT = new youtube();
 
         $scope.Questions = Questions.init();
         $scope.question = Questions.single;
@@ -102,7 +102,7 @@ ApplicationConfiguration.registerModule('students')
     function($scope, $upload, $http, $timeout, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
         $scope.authentication = Authentication;
 
-        $scope.yt = new youtube();
+        $scope.YT = new youtube();
 
         $scope.Questions = Questions.init();
         $scope.question = Questions.single;

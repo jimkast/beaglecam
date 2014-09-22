@@ -34,7 +34,7 @@ ApplicationConfiguration.registerModule('crud')
                 that.single = {};
 
                 return that;
-            }
+            };
 
             var createResource = function(path) {
                 return $resource(path, {
@@ -44,7 +44,7 @@ ApplicationConfiguration.registerModule('crud')
                         method: 'PUT'
                     }
                 });
-            }
+            };
 
             var Resource = createResource(path + '/:pathId');
 
@@ -111,14 +111,14 @@ ApplicationConfiguration.registerModule('crud')
 
             that.create = function(successCallback, errorCallback) {
 
-                var newResource = new Resource(that.single);
+                var NewResource = new Resource(that.single);
 
                 var successCallback = successCallback || callbacks.create.success;
                 var errorCallback = errorCallback || callbacks.create.error;
 
-                newResource.$save(successCallback, errorCallback);
+                NewResource.$save(successCallback, errorCallback);
 
-                return newResource;
+                return NewResource;
             };
 
 
@@ -137,8 +137,8 @@ ApplicationConfiguration.registerModule('crud')
                     }, errorCallback);
 
                 } else {
-                    var newResource = new Resource(that.single);
-                    newResource.$remove(successCallback, errorCallback);
+                    var NewResource = new Resource(that.single);
+                    NewResource.$remove(successCallback, errorCallback);
                 }
             };
 
@@ -149,9 +149,9 @@ ApplicationConfiguration.registerModule('crud')
                 var successCallback = successCallback || callbacks.update.success;
                 var errorCallback = errorCallback || callbacks.update.error;
 
-                var newResource = new Resource(that.single);
+                var NewResource = new Resource(that.single);
 
-                newResource.$update(successCallback, errorCallback);
+                NewResource.$update(successCallback, errorCallback);
             };
 
 
