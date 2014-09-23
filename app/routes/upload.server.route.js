@@ -119,9 +119,6 @@ googleapis.discover('youtube', 'v3').execute(function(err, client) {
 
 
 
-
-
-
 module.exports = function(app) {
     // Article Routes
     app.route('/upload').post(function(req, res, next) {
@@ -163,5 +160,18 @@ module.exports = function(app) {
             });
             // res.redirect('/uploads/' + fileName);
         });
+    })
+
+
+    .get(function(req, res, next) {
+        res.writeHead(200, {
+            'content-type': 'application/json'
+        });
+        res.end(
+            JSON.stringify({
+                test: 'test sl;gkfjsd',
+                message: req.query
+            })
+        );
     });
 };

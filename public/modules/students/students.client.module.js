@@ -1,6 +1,3 @@
-'use strict';
-
-// Use applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('students')
 
 
@@ -14,7 +11,7 @@ ApplicationConfiguration.registerModule('students')
             })
             .state('students2', {
                 url: '/questions/:id/record',
-                templateUrl: 'modules/students/students-record.client.view.html'
+                templateUrl: 'modules/students/students-record.client.view2.html'
             })
             .state('students3', {
                 url: '/answers/:id/confirm',
