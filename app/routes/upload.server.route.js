@@ -8,109 +8,74 @@ var users = require('../../app/controllers/users'),
     path = require('path'),
     fs = require('fs'),
     util = require('util'),
-    multiparty = require('multiparty');
+    multiparty = require('multiparty'),
+    config = require('../../config/config');
 
-/*
+
 
 var google = require('googleapis');
-var ResumableUpload = require('node-youtube-resumable-upload');
-var authClient = new google.auth.JWT(
-    'Service account client email address', #You will get "Email address" in developer console
-    for Service Account:
-    'youtube.pem',
-    null, ['https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/youtube.upload'],
-    null
-);
-authClient.authorize(function(err, tokens) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    var metadata = {
-        snippet: {
-            title: 'title',
-            description: 'Uploaded with ResumableUpload'
-        },
-        status: {
-            privacyStatus: 'private'
-        }
-    };
-    var resumableUpload = new ResumableUpload(); //create new ResumableUpload
-    resumableUpload.tokens = tokens;
-    resumableUpload.filepath = 'youtube.3gp';
-    resumableUpload.metadata = metadata;
-    resumableUpload.monitor = true;
-    resumableUpload.eventEmitter.on('progress', function(progress) {
-        console.log(progress);
-    });
-    resumableUpload.initUpload(function(result) {
-        console.log(result);
-        return;
-    });
-
-});
-
-
-
-
-var getTokens = function(callback) {
-    googleauth({
-            access_type: 'offline',
-            scope: 'https://www.googleapis.com/auth/youtube.upload' //can do just 'youtube', but 'youtube.upload' is more restrictive
-        }, {
-            client_id: CLIENT_ID, //replace with your client_id and _secret
-            client_secret: CLIENT_SECRET,
-            port: 3000
-        },
-        function(err, authClient, tokens) {
-            console.log(tokens);
-            callback(tokens);
-        });
-};
-
-// getTokens(function(result) {
-//     tokens = result;
-//     upload();
-// });
-
-
-var oauth2Client = new OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
 var youtube = google.youtube('v3');
+var ResumableUpload = require('node-youtube-resumable-upload');
+var OAuth2Client = google.auth.OAuth2;
 
-// Retrieve tokens via token exchange explained above or set them:
-oauth2Client.setCredentials({
-    access_token: 'ACCESS TOKEN HERE',
-    refresh_token: 'REFRESH TOKEN HERE'
+
+
+
+
+/* 
+ * GOOGLE EXAMPLE ====> GET TOKENS ==============
+ *
+
+var plus = google.plus('v1');
+
+// Client ID and client secret are available at
+// https://code.google.com/apis/console
+var CLIENT_ID = 'YOUR CLIENT ID HERE';
+var CLIENT_SECRET = 'YOUR CLIENT SECRET HERE';
+var REDIRECT_URL = 'YOUR REDIRECT URL HERE';
+
+var oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
 });
 
-googleapis.discover('youtube', 'v3').execute(function(err, client) {
+function getAccessToken(oauth2Client, callback) {
+  // generate consent page url
+  var url = oauth2Client.generateAuthUrl({
+    access_type: 'offline', // will return a refresh token
+    scope: 'https://www.googleapis.com/auth/plus.me' // can be a space-delimited string or an array of scopes
+  });
 
-    var metadata = {
-        snippet: {
-            title: 'title',
-            description: 'description'
-        },
-        status: {
-            privacyStatus: 'private'
-        }
-    };
+  console.log('Visit the url: ', url);
+  rl.question('Enter the code here:', function(code) {
+    // request access token
+    oauth2Client.getToken(code, function(err, tokens) {
+      // set tokens to the client
+      // TODO: tokens should be set by OAuth2 client.
+      oauth2Client.setCredentials(tokens);
+      callback();
+    });
+  });
+}
 
-    client
-        .youtube.videos.insert({
-            part: 'snippet,status'
-        }, metadata)
-        .withMedia('video/mp4', fs.readFileSync('user.flv'))
-        .withAuthClient(auth)
-        .execute(function(err, result) {
-            if (err) console.log(err);
-            else console.log(JSON.stringify(result, null, '  '));
-        });
+// retrieve an access token
+getAccessToken(oauth2Client, function() {
+  // retrieve user profile
+  plus.people.get({ userId: 'me', auth: oauth2Client }, function(err, profile) {
+    if (err) {
+      console.log('An error occured', err);
+      return;
+    }
+    console.log(profile.displayName, ':', profile.tagline);
+  });
 });
 
 
-
-*/
-
+ * 
+ * GOOGLE EXAMPLE ====> GET TOKENS ======== END ==========
+ */
 
 
 
@@ -120,8 +85,59 @@ googleapis.discover('youtube', 'v3').execute(function(err, client) {
 
 
 module.exports = function(app) {
-    // Article Routes
-    app.route('/upload').post(function(req, res, next) {
+
+
+    app.route('/youtube').get(function(request, response, next) {
+
+        var tokens = {
+            accessToken: request.user.providerData.accessToken,
+            refreshToken: request.user.providerData.refreshToken
+        };
+
+        var googleConfig = config.google;
+        
+        var oauth2Client = new OAuth2Client(googleConfig.clientID, googleConfig.clientSecret, googleConfig.callbackURL);
+
+         oauth2Client.setCredentials(tokens);
+
+
+        var metadata = {
+            snippet: {
+                title: 'cam-proj titleeee',
+                description: 'Uploaded with ResumableUpload'
+            },
+            status: {
+                privacyStatus: 'private'
+            }
+        };
+
+        var resumableUpload = new ResumableUpload(); //create new ResumableUpload
+        resumableUpload.tokens = tokens;
+        resumableUpload.filepath = './uploads/testvid.mp4';
+        resumableUpload.metadata = metadata;
+        resumableUpload.monitor = true;
+        resumableUpload.eventEmitter.on('progress', function(progress) {
+            console.log(progress);
+        });
+        resumableUpload.initUpload(function(result) {
+            console.log(result);
+            return;
+        });
+
+        response.writeHead(200, {
+            'content-type': 'application/json'
+        });
+        // res.end(util.inspect(fields));
+        response.end(JSON.stringify({
+            test: 'aaaaaaa',
+            tokens: resumableUpload.tokens
+        }));
+
+
+    });
+
+
+    app.route('/upload').post(function(request, response, next) {
 
         var fileName = '';
         var size = '';
@@ -129,20 +145,21 @@ module.exports = function(app) {
 
         form.parse(req, function(err, fields, files) {
             if (err) {
-                res.writeHead(400, {
+                response.writeHead(400, {
                     'content-type': 'application/json'
                 });
-                res.end({
+                response.end({
                     message: err.message
                 });
 
-                return;
+            } else {
+                response.writeHead(200, {
+                    'content-type': 'application/json'
+                });
+                // res.end(util.inspect(fields));
+                response.end(util.inspect(files));
             }
-            res.writeHead(200, {
-                'content-type': 'application/json'
-            });
-            // res.end(util.inspect(fields));
-            res.end(util.inspect(files));
+
         });
 
 
@@ -158,16 +175,16 @@ module.exports = function(app) {
             fs.renameSync(file.path, target_path, function(err) {
                 if (err) console.error(err.stack);
             });
-            // res.redirect('/uploads/' + fileName);
+            // response.redirect('/uploads/' + fileName);
         });
     })
 
 
-    .get(function(req, res, next) {
-        res.writeHead(200, {
+    .get(function(request, response, next) {
+        response.writeHead(200, {
             'content-type': 'application/json'
         });
-        res.end(
+        response.end(
             JSON.stringify({
                 test: 'test sl;gkfjsd',
                 message: req.query
