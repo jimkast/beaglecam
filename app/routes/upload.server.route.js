@@ -9,7 +9,8 @@ var users = require('../../app/controllers/users'),
     fs = require('fs'),
     util = require('util'),
     multiparty = require('multiparty'),
-    config = require('../../config/config');
+    config = require('../../config/config'),
+    fs = require('fs');
 
 
 
@@ -90,26 +91,64 @@ module.exports = function(app) {
     app.route('/youtube').get(function(request, response, next) {
 
         var tokens = {
-            accessToken: request.user.providerData.accessToken,
-            refreshToken: request.user.providerData.refreshToken
+            // access_token: request.user.providerData.accessToken,
+            access_token: 'ya29.iwCk32-xGtnCfkeJCRBnhzzyqzwCL35XtEJXT41Wl8-8qJuvNs4n5msn',
+            refresh_token: request.user.providerData.refreshToken
         };
 
         var googleConfig = config.google;
-        
+
         var oauth2Client = new OAuth2Client(googleConfig.clientID, googleConfig.clientSecret, googleConfig.callbackURL);
 
-         oauth2Client.setCredentials(tokens);
+        oauth2Client.setCredentials(tokens);
+
+
+        console.log(tokens, 'tokenssss');
 
 
         var metadata = {
             snippet: {
-                title: 'cam-proj titleeee',
+                title: 'cam-proj titleeeeeedfg 2222',
                 description: 'Uploaded with ResumableUpload'
             },
             status: {
                 privacyStatus: 'private'
             }
         };
+
+
+
+        // google.options({
+        //     auth: oauth2Client
+        // });
+
+        // youtube.videos.insert({
+        //     part: 'status,snippet',
+        //     resource: {
+        //         snippet: {
+        //             title: 'cam-proj titleeee',
+        //             description: 'Uploaded with ResumableUpload'
+        //         },
+        //         status: {
+        //             privacyStatus: 'private' //if you want the video to be private
+        //         }
+        //     },
+        //     media: {
+        //         body: fs.createReadStream('./uploads/testvid.mp4')
+        //     }
+        // }, function(error, data) {
+        //     if (error) {
+        //        console.log(error, data, 'errorrrr');
+        //     } else {
+        //        console.log(error, data.id, data, 'success');
+        //     }
+        // });
+
+        // return;
+
+
+
+        
 
         var resumableUpload = new ResumableUpload(); //create new ResumableUpload
         resumableUpload.tokens = tokens;
