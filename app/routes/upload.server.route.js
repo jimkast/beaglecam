@@ -9,7 +9,8 @@ var users = require('../../app/controllers/users'),
     fs = require('fs'),
     util = require('util'),
     multiparty = require('multiparty'),
-    config = require('../../config/config');
+    config = require('../../config/config'),
+    fs = require('fs');
 
 
 
@@ -77,6 +78,45 @@ getAccessToken(oauth2Client, function() {
  * GOOGLE EXAMPLE ====> GET TOKENS ======== END ==========
  */
 
+function uploadToYoutube(video_file, tokens, callback) {
+    var google = require("googleapis"),
+        yt = google.youtube('v3');
+
+    var googleConfig = config.google;
+
+    console.log(googleConfig, 'googleConfig', tokens);
+
+    var oauth2Client = new google.auth.OAuth2(googleConfig.clientID, googleConfig.clientSecret, googleConfig.callbackURL);
+    oauth2Client.setCredentials({
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
+    });
+    google.options({
+        auth: oauth2Client
+    });
+
+    return yt.videos.insert({
+        part: 'status,snippet',
+        resource: {
+            snippet: {
+                title: 'Test Title...',
+                description: 'Uploaded for cam project'
+            },
+            status: {
+                privacyStatus: 'private' //if you want the video to be private
+            }
+        },
+        media: {
+            body: fs.createReadStream(video_file)
+        }
+    }, function(error, data) {
+        if (error) {
+            callback(error, null);
+        } else {
+            callback(null, data.id);
+        }
+    });
+};
 
 
 
@@ -94,11 +134,29 @@ module.exports = function(app) {
             refreshToken: request.user.providerData.refreshToken
         };
 
+/*
+        uploadToYoutube('./uploads/testvid.mp4', tokens, function(param1, param2) {
+            console.log(param1, 'parame1');
+            console.log(param2, 'parame222');
+        });
+
+
+        return;
+
+
+
+*/
         var googleConfig = config.google;
-        
+
         var oauth2Client = new OAuth2Client(googleConfig.clientID, googleConfig.clientSecret, googleConfig.callbackURL);
 
-         oauth2Client.setCredentials(tokens);
+        oauth2Client.setCredentials({
+            access_token: tokens.accessToken,
+            refresh_token: tokens.refreshToken
+        });
+        // google.options({
+        //     auth: oauth2Client
+        // });
 
 
         var metadata = {
@@ -112,7 +170,10 @@ module.exports = function(app) {
         };
 
         var resumableUpload = new ResumableUpload(); //create new ResumableUpload
-        resumableUpload.tokens = tokens;
+        resumableUpload.tokens = {
+            access_token: tokens.accessToken,
+            refresh_token: tokens.refreshToken
+        };
         resumableUpload.filepath = './uploads/testvid.mp4';
         resumableUpload.metadata = metadata;
         resumableUpload.monitor = true;
@@ -135,6 +196,13 @@ module.exports = function(app) {
 
 
     });
+
+
+
+
+
+
+
 
 
     app.route('/upload').post(function(request, response, next) {
@@ -180,6 +248,8 @@ module.exports = function(app) {
     })
 
 
+
+
     .get(function(request, response, next) {
         response.writeHead(200, {
             'content-type': 'application/json'
@@ -191,4 +261,6 @@ module.exports = function(app) {
             })
         );
     });
+
+
 };
