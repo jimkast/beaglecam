@@ -11,7 +11,7 @@ ApplicationConfiguration.registerModule('students')
             })
             .state('students2', {
                 url: '/questions/:id/record',
-                templateUrl: 'modules/students/students-record.client.view2.html'
+                templateUrl: 'modules/students/students-record.client.view.html'
             })
             .state('students3', {
                 url: '/answers/:id/confirm',
@@ -31,7 +31,7 @@ ApplicationConfiguration.registerModule('students')
 ])
 
 
-
+// TO BE REMOVED
 .controller('StudentsController', ['$scope', '$upload', '$sce', '$stateParams', 'Authentication', 'Grades', 'Answers', 'Questions',
     function($scope, $upload, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
         $scope.authentication = Authentication;
@@ -83,7 +83,6 @@ ApplicationConfiguration.registerModule('students')
             // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
         };
 
-
     }
 ])
 
@@ -95,8 +94,8 @@ ApplicationConfiguration.registerModule('students')
 
 
 
-.controller('StudentsController2', ['$scope', '$upload', '$http', '$timeout', '$sce', '$stateParams', 'Authentication', 'Grades', 'Answers', 'Questions',
-    function($scope, $upload, $http, $timeout, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
+.controller('StudentsController2', ['$scope', '$location', '$upload', '$http', '$timeout', '$sce', '$stateParams', 'Authentication', 'Grades', 'Answers', 'Questions',
+    function($scope, $location, $upload, $http, $timeout, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
         $scope.authentication = Authentication;
 
         $scope.YT = new youtube();
@@ -195,6 +194,18 @@ ApplicationConfiguration.registerModule('students')
                 $scope.upload[index].then(function(response) {
                     $timeout(function() {
                         $scope.uploadResult.push(response.data);
+
+                       
+
+                        angular.extend($scope.answer, {
+                            localVideo: response.data.path
+                        });
+                        console.log(Answers);
+                        Answers.create(function(answer){
+                            console.log($scope.answer);
+                            $location.path('answers/' + answer._id + '/confirm');
+
+                        });
                     });
                 }, function(response) {
                     if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;

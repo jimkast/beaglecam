@@ -44,6 +44,7 @@ ApplicationConfiguration.registerModule('answers')
     function(baseCRUD, YouTube, $sce) {
         var Resource = new baseCRUD('answers');
 
+        Resource.callbacks.create.success = function(answer) {};
         Resource.callbacks.findOne.after = function(answer) {
             answer.videoDetails = {
                 embed: $sce.trustAsResourceUrl(
@@ -54,6 +55,10 @@ ApplicationConfiguration.registerModule('answers')
                     )
                 )
             };
+
+            if (answer.localVideo) {
+                answer.localVideo = $sce.trustAsResourceUrl(answer.localVideo);
+            }
 
         };
 
@@ -99,6 +104,16 @@ ApplicationConfiguration.registerModule('answers')
                 })
             });
         }
+
+        Answers.callbacks.findOne.success = function(answer) {
+            $scope.aaa = [{
+                scr: 'http://localhost:3000/' + answer.localVideo,
+                type: 'video/mp4'
+            }];
+
+            $scope.bbb = 'lib/videogular/default.css';
+        };
+
 
     }
 ])

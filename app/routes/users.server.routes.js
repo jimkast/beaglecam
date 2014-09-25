@@ -32,11 +32,11 @@ module.exports = function(app) {
     app.route('/auth/google').get(passport.authenticate('google', {
         scope: [
             'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/userinfo.email'
-        ]
-        // ,
-        // accessType: 'offline',
-        // approvalPrompt: 'force'
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/youtube'
+        ],
+        accessType: 'offline',
+        approvalPrompt: 'force'
     }));
     app.route('/auth/google/callback').get(users.oauthCallback('google'));
 

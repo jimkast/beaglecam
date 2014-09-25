@@ -6,11 +6,16 @@
 var users = require('../../app/controllers/users'),
     articles = require('../../app/controllers/articles'),
     path = require('path'),
-    fs = require('fs'),
     util = require('util'),
     multiparty = require('multiparty'),
     config = require('../../config/config'),
-    fs = require('fs');
+    fs = require('fs'),
+    http = require('http'),
+    // sys = require("sys"),
+    url = require("url"),
+    events = require("events");
+
+
 
 
 
@@ -20,63 +25,18 @@ var ResumableUpload = require('node-youtube-resumable-upload');
 var OAuth2Client = google.auth.OAuth2;
 
 
-
-
-
-/* 
- * GOOGLE EXAMPLE ====> GET TOKENS ==============
- *
-
-var plus = google.plus('v1');
-
-// Client ID and client secret are available at
-// https://code.google.com/apis/console
-var CLIENT_ID = 'YOUR CLIENT ID HERE';
-var CLIENT_SECRET = 'YOUR CLIENT SECRET HERE';
-var REDIRECT_URL = 'YOUR REDIRECT URL HERE';
-
-var oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
-
-var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-function getAccessToken(oauth2Client, callback) {
-  // generate consent page url
-  var url = oauth2Client.generateAuthUrl({
-    access_type: 'offline', // will return a refresh token
-    scope: 'https://www.googleapis.com/auth/plus.me' // can be a space-delimited string or an array of scopes
-  });
-
-  console.log('Visit the url: ', url);
-  rl.question('Enter the code here:', function(code) {
-    // request access token
-    oauth2Client.getToken(code, function(err, tokens) {
-      // set tokens to the client
-      // TODO: tokens should be set by OAuth2 client.
-      oauth2Client.setCredentials(tokens);
-      callback();
-    });
-  });
+function generateUniqueFilename() {
+    return Math.random().toString(36).slice(2);
 }
 
-// retrieve an access token
-getAccessToken(oauth2Client, function() {
-  // retrieve user profile
-  plus.people.get({ userId: 'me', auth: oauth2Client }, function(err, profile) {
-    if (err) {
-      console.log('An error occured', err);
-      return;
+
+function getFileExtension(filename) {
+    var fileParts = filename.split(".");
+    if (fileParts.length === 1 || (fileParts[0] === "" && fileParts.length === 2)) {
+        return "";
     }
-    console.log(profile.displayName, ':', profile.tagline);
-  });
-});
-
-
- * 
- * GOOGLE EXAMPLE ====> GET TOKENS ======== END ==========
- */
+    return fileParts.pop();
+}
 
 function uploadToYoutube(video_file, tokens, callback) {
     var google = require("googleapis"),
@@ -130,22 +90,12 @@ module.exports = function(app) {
     app.route('/youtube').get(function(request, response, next) {
 
         var tokens = {
-            accessToken: request.user.providerData.accessToken,
-            refreshToken: request.user.providerData.refreshToken
+            // access_token: request.user.providerData.accessToken,
+            access_token: 'ya29.iwCk32-xGtnCfkeJCRBnhzzyqzwCL35XtEJXT41Wl8-8qJuvNs4n5msn',
+            refresh_token: request.user.providerData.refreshToken
         };
 
-/*
-        uploadToYoutube('./uploads/testvid.mp4', tokens, function(param1, param2) {
-            console.log(param1, 'parame1');
-            console.log(param2, 'parame222');
-        });
 
-
-        return;
-
-
-
-*/
         var googleConfig = config.google;
 
         var oauth2Client = new OAuth2Client(googleConfig.clientID, googleConfig.clientSecret, googleConfig.callbackURL);
@@ -158,16 +108,49 @@ module.exports = function(app) {
         //     auth: oauth2Client
         // });
 
-
         var metadata = {
             snippet: {
-                title: 'cam-proj titleeee',
+                title: 'cam-proj titleeeeeedfg 2222',
                 description: 'Uploaded with ResumableUpload'
             },
             status: {
                 privacyStatus: 'private'
             }
         };
+
+
+
+        // google.options({
+        //     auth: oauth2Client
+        // });
+
+        // youtube.videos.insert({
+        //     part: 'status,snippet',
+        //     resource: {
+        //         snippet: {
+        //             title: 'cam-proj titleeee',
+        //             description: 'Uploaded with ResumableUpload'
+        //         },
+        //         status: {
+        //             privacyStatus: 'private' //if you want the video to be private
+        //         }
+        //     },
+        //     media: {
+        //         body: fs.createReadStream('./uploads/testvid.mp4')
+        //     }
+        // }, function(error, data) {
+        //     if (error) {
+        //        console.log(error, data, 'errorrrr');
+        //     } else {
+        //        console.log(error, data.id, data, 'success');
+        //     }
+        // });
+
+        // return;
+
+
+
+
 
         var resumableUpload = new ResumableUpload(); //create new ResumableUpload
         resumableUpload.tokens = {
@@ -207,11 +190,17 @@ module.exports = function(app) {
 
     app.route('/upload').post(function(request, response, next) {
 
-        var fileName = '';
-        var size = '';
+        var destPrefix = './public/',
+            destFolder = 'uploads/',
+            originalFilename = '',
+            newFileName = '',
+            fileExtension = '',
+            fileSize = '';
+
+
         var form = new multiparty.Form();
 
-        form.parse(req, function(err, fields, files) {
+        form.parse(request, function(err, fields, files) {
             if (err) {
                 response.writeHead(400, {
                     'content-type': 'application/json'
@@ -225,7 +214,12 @@ module.exports = function(app) {
                     'content-type': 'application/json'
                 });
                 // res.end(util.inspect(fields));
-                response.end(util.inspect(files));
+                response.end(JSON.stringify({
+                    // files: files,
+                    size: fileSize,
+                    original: originalFilename,
+                    path: destFolder + newFileName
+                }));
             }
 
         });
@@ -233,13 +227,16 @@ module.exports = function(app) {
 
         form.on('part', function(part) {
             if (!part.filename) return;
-            size = part.byteCount;
-            fileName = part.filename;
+            fileSize = part.byteCount;
+            originalFilename = part.filename;
+            var fileExtension = getFileExtension(originalFilename);
+            fileExtension = fileExtension ? '.' + fileExtension : '';
+            newFileName = generateUniqueFilename() + fileExtension;
         });
 
         form.on('file', function(name, file) {
 
-            var target_path = './uploads/' + fileName;
+            var target_path = destPrefix + destFolder + newFileName;
             fs.renameSync(file.path, target_path, function(err) {
                 if (err) console.error(err.stack);
             });
@@ -250,16 +247,59 @@ module.exports = function(app) {
 
 
 
+
+
+
+
     .get(function(request, response, next) {
-        response.writeHead(200, {
-            'content-type': 'application/json'
-        });
-        response.end(
-            JSON.stringify({
-                test: 'test sl;gkfjsd',
-                message: req.query
-            })
-        );
+
+
+        var downloadfile = request.query.path;
+
+        if (!downloadfile) {
+            return;
+        }
+
+        var dlprogress = 0;
+        var filename = generateUniqueFilename();
+
+        var pathPrefix = './public/';
+        var localPath = 'uploads/' + filename + '.mp4';
+        var localfile = pathPrefix + localPath;
+
+        http.get(downloadfile, function(res) {
+            var writeStream = fs.createWriteStream(localfile, {
+                'flags': 'a'
+            });
+            console.log("File size " + filename + ": " + res.headers['content-length'] + " bytes.");
+            res.on('data', function(chunk) {
+                dlprogress += chunk.length;
+                writeStream.write(chunk);
+            });
+            res.on("end", function() {
+                writeStream.end();
+                console.log("Finished downloading " + filename);
+            });
+
+
+
+
+            response.writeHead(200, {
+                'content-type': 'application/json'
+            });
+            response.end(
+                JSON.stringify({
+                    status: 'OK',
+                    message: localfile
+                })
+            );
+
+        })
+
+
+
+
+
     });
 
 

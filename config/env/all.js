@@ -42,7 +42,9 @@ module.exports = {
 
                 'public/lib/ng-file-upload/angular-file-upload.js',
 
-                'public/lib/webcam-directive/app/scripts/webcam.js'
+                'public/lib/webcam-directive/app/scripts/webcam.js',
+                'public/lib/videogular/videogular.js'
+                
 
 
             ]

@@ -12,13 +12,22 @@ var mongoose = require('mongoose'),
 var AnswerSchema = new Schema({
     description: {
         type: String,
-        default: '',
+        default: 'No Answerrr',
         required: 'Please fill Answer description'
     },
     video: {
         type: String,
         default: '',
         trim: true
+    },
+    localVideo: {
+        type: String,
+        default: '',
+        trim: true
+    },
+    enabled:{
+        type: Boolean,
+        default: false
     },
     created: {
         type: Date,

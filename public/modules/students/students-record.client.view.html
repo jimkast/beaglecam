@@ -16,6 +16,7 @@
  -->
 
 
+
 <section data-ng-controller="StudentsController2" data-ng-init="Questions.findOne()">
 
 
@@ -35,194 +36,69 @@
 
 
     <p><b>Read Time:</b> 
-        <span ng-bind="question.readTime"></span>seconds</p>
+        <span ng-bind="question.readTime"></span>
+        seconds
+    </p>
     <p><b>Record Time:</b> 
-        <span ng-bind="question.recordTime"></span>seconds</p>
+        <span ng-bind="question.recordTime"></span>
+        seconds
+    </p>
 
-
-    <br>
-    <br>
-    <br>
-    <br>
 
     <hr>
     <hr>
 
-    <br>
-    <br>
-    <br>
-    <br>
 
     <h1>Give an Answer...</h1>
     <br>
     <br>
 
     <!--  ========= RECORD ============ -->
-    <div>
+    <div ng-controller="ScriptcamController">
         <h2>Record from your Web Camera</h2>
         <hr>
 
 
-        <script>
-        $(document).ready(function() {
-            $("#webcam").scriptcam({
-                fileReady: fileReady,
-                cornerRadius: 20,
-                path: '/recordings/',
-                canvasWidth: 640,
-                canvasHeight: 480,
-                // cornerColor: 'e3e5e2',
-                onError: onError,
-                // promptWillShow: promptWillShow,
-                showMicrophoneErrors: false,
-                showDebug: true,
-                onWebcamReady: onWebcamReady,
-                setVolume: setVolume,
-                timeLeft: timeLeft,
-                fileName: 'demo609571',
-                connected: showRecord
-            });
-            setVolume(0);
-            // $("#slider").slider({
-            //     animate: true,
-            //     min: 0,
-            //     max: 100,
-            //     value: 50,
-            //     orientation: 'vertical',
-            //     disabled: true
-            // });
-            // $("#slider").bind("slidechange", function(event, ui) {
-            //     $.scriptcam.changeVolume($("#slider").slider("option", "value"));
-            // });
-        });
+        <div id="message" ng-bind="Webcam.message"></div>
 
-        function showRecord() {
-            $("#recordStartButton").attr("disabled", false);
-        }
+        _
+        <a ng-href="{{Webcam.filename}}" ng-bind="Webcam.filename"></a>
 
-        function startRecording() {
-            $("#recordStartButton").attr("disabled", true);
-            $("#recordStopButton").attr("disabled", false);
-            $("#recordPauseResumeButton").attr("disabled", false);
-            $.scriptcam.startRecording();
-        }
-
-        function closeCamera() {
-            // $("#slider").slider("option", "disabled", true);
-            $("#recordPauseResumeButton").attr("disabled", true);
-            $("#recordStopButton").attr("disabled", true);
-            $.scriptcam.closeCamera();
-            $('#message').html('Please wait for the file conversion to finish...');
-        }
-
-        function pauseResumeCamera() {
-            if ($("#recordPauseResumeButton").html() == 'Pause Recording') {
-                $("#recordPauseResumeButton").html("Resume Recording");
-                $.scriptcam.pauseRecording();
-            } else {
-                $("#recordPauseResumeButton").html("Pause Recording");
-                $.scriptcam.resumeRecording();
-            }
-        }
-
-        function fileReady(fileName) {
-            $('#recorder').hide();
-            fileName2 = fileName.replace('mp4', 'gif');
-            $('#message').html('The MP4 file is now dowloadable for five minutes over <a href="' + fileName + '">here</a>. The animated GIF can be downloaded <a href="' + fileName2 + '">here</a>.');
-            var fileNameNoExtension = fileName.replace(".mp4", "");
-            jwplayer("mediaplayer").setup({
-                width: 640,
-                height: 480,
-                file: fileName,
-                image: fileNameNoExtension + '_0000.jpg',
-                tracks: [{
-                    file: fileNameNoExtension + '.vtt',
-                    kind: 'thumbnails'
-                }]
-            });
-            $('#mediaplayer').show();
-        }
-
-        function onError(errorId, errorMsg) {
-            alert(errorMsg);
-        }
-
-        function onWebcamReady(cameraNames, camera, microphoneNames, microphone, volume) {
-            console.log(cameraNames, camera, microphoneNames, microphone, volume, 'aaaaaaaaaaa')
-            // $("#slider").slider("option", "disabled", false);
-            // $("#slider").slider("option", "value", volume);
-            $.each(cameraNames, function(index, text) {
-                $('#cameraNames').append($('<option></option>').val(index).html(text))
-            });
-            $('#cameraNames').val(camera);
-            $.each(microphoneNames, function(index, text) {
-                $('#microphoneNames').append($('<option></option>').val(index).html(text))
-            });
-            $('#microphoneNames').val(microphone);
-        }
-
-        function promptWillShow() {
-            alert('A security dialog will be shown. Please click on ALLOW.');
-        }
-
-        function setVolume(value) {
-            value = parseInt(32 * value / 100) + 1;
-            for (var i = 1; i < value; i++) {
-                $('#LedBar' + i).css('visibility', 'visible');
-            }
-            for (i = value; i < 33; i++) {
-                $('#LedBar' + i).css('visibility', 'hidden');
-            }
-        }
-
-        function timeLeft(value) {
-            $('#timeLeft').val(value);
-        }
-
-        function changeCamera() {
-            $.scriptcam.changeCamera($('#cameraNames').val());
-        }
-
-        function changeMicrophone() {
-            $.scriptcam.changeMicrophone($('#microphoneNames').val());
-        }
-        </script>
-
-
-        <div id="message"></div>
         <div id="recorder">
 
             <h4>Camera Area</h4>
             <div style="float:left;border:4px solid red">
-                <div id="webcam">
+                <div id="webcam" data-scriptcamera="webcamConfig" data-scriptcamera-init="loadWebcam">
                 </div>
             </div>
-            <div id="volumePanel" style="float:left;position:relative;top:10px;display:none">
-                <div id="volumeMeter" style="position:absolute;top:10px;left:7px;float:left;">
 
-                </div>
-                <div id="slider" style="position:absolute;top:10px;left:30px;">
-                </div>
-            </div>
             <br clear="both" />
             <br>
             <div id="setupPanel">
-                <img src="modules/students/img/webcamlogo.png" style="vertical-align:text-top" />
-                <select id="cameraNames" size="1" onChange="changeCamera()" style="width:145px;font-size:10px;height:25px;">
+                <img src="modules/students/img/webcamlogo.png" />
+                <select id="cameraNames" size="1" ng-model="Webcam.camera" ng-change="Webcam.changeCamera()" class="form-control">
+                    <option ng-repeat="cam in Webcam.cameraNames" value="{{$index}}" ng-bind="cam"></option>
                 </select>
-                <img src="modules/students/img/miclogo.png" style="vertical-align:text-top;padding-left:45px;" />
-                <select id="microphoneNames" size="1" onChange="changeMicrophone()" style="width:128px;font-size:10px;height:25px;">
+                <img src="modules/students/img/miclogo.png" />
+                <select id="microphoneNames" size="1" ng-change="changeMicrophone()" ng-model="Webcam.microphone" ng-change="Webcam.changeMicrophone()" class="form-control">
+                    <option ng-repeat="mic in Webcam.microphoneNames" value="{{$index}}" ng-bind="mic"></option>
                 </select>
             </div>
             <br/>
-            <button id="recordStartButton" class="btn btn-small" onclick="startRecording()" disabled>Start Recording</button>&nbsp;
-            <span style="padding-left:5px;padding-right:5px;">
-                Time left:
-                <input type="text" id="timeLeft" style="width:50px;font-size:10px;" data-ng-model="question.timeLeft">&nbsp;
+            <button id="recordStartButton" class="btn btn-small" ng-click="Webcam.startRecording()" ng-disabled="connected">Start Recording</button>&nbsp;
 
+            <span>
+                Time left:
+                <input type="text" id="timeLeft" data-ng-model="Webcam.timeLeft" class="form-control">&nbsp;
             </span>
-            <button id="recordPauseResumeButton" class="btn btn-small" onclick="pauseResumeCamera()" disabled>Pause Recording</button>
-            <button id="recordStopButton" class="btn btn-small" onclick="closeCamera()" disabled>Stop Recording</button>
+
+            <button id="recordPauseResumeButton" class="btn btn-small" ng-click="Webcam.pauseResumeCamera()" ng-disabled="!Webcam.recording">
+                <span ng-show="Webcam.paused">Resume</span>
+                <span ng-show="!Webcam.paused">Pause</span>
+                Recording
+            </button>
+
+            <button id="recordStopButton" class="btn btn-small" ng-click="Webcam.closeCamera()" ng-disabled="!Webcam.recording">Stop Recording</button>
         </div>
         <div id="mediaplayer" style="display:none;"></div>
 
@@ -257,26 +133,28 @@
     </div>
 
  -->
-    <script type="text/javascript">
-    FileAPI = {
-        debug: true,
-        //forceLoad: true, html5: false //to debug flash in HTML5 browsers
-        //wrapInsideDiv: true, //experimental for fixing css issues
-        //only one of jsPath or jsUrl.
-        //jsPath: '/js/FileAPI.min.js/folder/', 
-        //jsUrl: 'yourcdn.com/js/FileAPI.min.js',
 
-        //only one of staticPath or flashUrl.
-        //staticPath: '/flash/FileAPI.flash.swf/folder/'
-        //flashUrl: 'yourcdn.com/js/FileAPI.flash.swf'
-    };
-    </script>
 
 
 
 
 
     <div>
+
+        <script type="text/javascript">
+        FileAPI = {
+            debug: true,
+            //forceLoad: true, html5: false //to debug flash in HTML5 browsers
+            //wrapInsideDiv: true, //experimental for fixing css issues
+            //only one of jsPath or jsUrl.
+            //jsPath: '/js/FileAPI.min.js/folder/', 
+            //jsUrl: 'yourcdn.com/js/FileAPI.min.js',
+
+            //only one of staticPath or flashUrl.
+            //staticPath: '/flash/FileAPI.flash.swf/folder/'
+            //flashUrl: 'yourcdn.com/js/FileAPI.flash.swf'
+        };
+        </script>
 
         <div class="upload-div">
 
