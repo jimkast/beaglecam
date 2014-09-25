@@ -34,9 +34,9 @@ module.exports = function(app) {
             'https://www.googleapis.com/auth/userinfo.profile',
             'https://www.googleapis.com/auth/userinfo.email'
         ]
-        // ,
-        // accessType: 'offline',
-        // approvalPrompt: 'force'
+        ,
+        accessType: 'offline',
+        approvalPrompt: 'force'
     }));
     app.route('/auth/google/callback').get(users.oauthCallback('google'));
 
