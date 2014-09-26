@@ -20,7 +20,7 @@
         <iframe width="420" height="315" ng-src="{{answer.videoDetails.embed}}" frameborder="0" allowfullscreen></iframe>
     </div>
 
-{{aaa}}
+VideoConfig: {{VideoConfig}}
 
     <div ng-if="answer.localVideo">
 <!--         <video width="640" height="480" controls>
@@ -29,9 +29,12 @@
                 Your browser does not support the video tag.
         </video>
  -->
-        <videogular vg-theme="bbb">
-            <vg-video vg-src="aaa.sources" vg-native-controls="true"></vg-video>
+<!--         <videogular vg-theme="VideoConfig.theme">
+            <vg-video vg-src="VideoConfig.sources" vg-native-controls="true"></vg-video>
         </videogular>
+ -->
+
+        <video controls ng-src="{{VideoConfig.sources[0].src}}"></video>
     </div>
 
     <br />

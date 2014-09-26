@@ -5,61 +5,61 @@ ApplicationConfiguration.registerModule('users')
 
 
 .config(['$httpProvider',
-	function($httpProvider) {
-		// Set the httpProvider "not authorized" interceptor
-		$httpProvider.interceptors.push(['$q', '$location', 'Authentication',
-			function($q, $location, Authentication) {
-				return {
-					responseError: function(rejection) {
-						switch (rejection.status) {
-							case 401:
-								// Deauthenticate the global user
-								Authentication.user = null;
+    function($httpProvider) {
+        // Set the httpProvider "not authorized" interceptor
+        $httpProvider.interceptors.push(['$q', '$location', 'Authentication',
+            function($q, $location, Authentication) {
+                return {
+                    responseError: function(rejection) {
+                        switch (rejection.status) {
+                            case 401:
+                                // Deauthenticate the global user
+                                Authentication.user = null;
 
-								// Redirect to signin page
-								$location.path('signin');
-								break;
-							case 403:
-								// Add unauthorized behaviour 
-								break;
-						}
+                                // Redirect to signin page
+                                $location.path('signin');
+                                break;
+                            case 403:
+                                // Add unauthorized behaviour 
+                                break;
+                        }
 
-						return $q.reject(rejection);
-					}
-				};
-			}
-		]);
-	}
+                        return $q.reject(rejection);
+                    }
+                };
+            }
+        ]);
+    }
 ])
 
 
 
 
 .config(['$stateProvider',
-	function($stateProvider) {
-		// Users state routing
-		$stateProvider.
-		state('profile', {
-			url: '/settings/profile',
-			templateUrl: 'modules/users/views/settings/edit-profile.client.view.html'
-		}).
-		state('password', {
-			url: '/settings/password',
-			templateUrl: 'modules/users/views/settings/change-password.client.view.html'
-		}).
-		state('accounts', {
-			url: '/settings/accounts',
-			templateUrl: 'modules/users/views/settings/social-accounts.client.view.html'
-		}).
-		state('signup', {
-			url: '/signup',
-			templateUrl: 'modules/users/views/signup.client.view.html'
-		}).
-		state('signin', {
-			url: '/signin',
-			templateUrl: 'modules/users/views/signin.client.view.html'
-		});
-	}
+    function($stateProvider) {
+        // Users state routing
+        $stateProvider.
+        state('profile', {
+            url: '/settings/profile',
+            templateUrl: 'modules/users/views/settings/edit-profile.client.view.html'
+        }).
+        state('password', {
+            url: '/settings/password',
+            templateUrl: 'modules/users/views/settings/change-password.client.view.html'
+        }).
+        state('accounts', {
+            url: '/settings/accounts',
+            templateUrl: 'modules/users/views/settings/social-accounts.client.view.html'
+        }).
+        state('signup', {
+            url: '/signup',
+            templateUrl: 'modules/users/views/signup.client.view.html'
+        }).
+        state('signin', {
+            url: '/signin',
+            templateUrl: 'modules/users/views/signin.client.view.html'
+        });
+    }
 ])
 
 
@@ -67,32 +67,33 @@ ApplicationConfiguration.registerModule('users')
 
 
 .factory('Authentication', [
-	function() {
-		var that = this;
 
-		that._data = {
-			user: window.user,
+    function() {
+        var that = this;
 
-			hasRole: function(role){
-				return user.roles.indexOf(role) > -1;
-			}
-		};
+        that._data = {
+            user: window.user,
 
-		return that._data;
-	}
+            hasRole: function(role) {
+                return user.roles.indexOf(role) > -1;
+            }
+        };
+
+        return that._data;
+    }
 ])
 
 
 
 
 .factory('Users', ['$resource',
-	function($resource) {
-		return $resource('users', {}, {
-			update: {
-				method: 'PUT'
-			}
-		});
-	}
+    function($resource) {
+        return $resource('users', {}, {
+            update: {
+                method: 'PUT'
+            }
+        });
+    }
 ])
 
 
@@ -135,69 +136,75 @@ ApplicationConfiguration.registerModule('users')
 
 
 .controller('SettingsController', ['$scope', '$http', '$location', 'Users', 'Authentication',
-	function($scope, $http, $location, Users, Authentication) {
-		$scope.user = Authentication.user;
+    function($scope, $http, $location, Users, Authentication) {
+        $scope.user = angular.extend({}, Authentication.user);
 
-		// If user is not signed in then redirect back home
-		if (!$scope.user) $location.path('/');
 
-		// Check if there are additional accounts 
-		$scope.hasConnectedAdditionalSocialAccounts = function(provider) {
-			for (var i in $scope.user.additionalProvidersData) {
-				return true;
-			}
+        $scope.user.roles = $scope.user.roles || [];
+        $scope.selectedRole = $scope.user.roles[0] || 'student';
 
-			return false;
-		};
-		
-		// Check if provider is already in use with current user
-		$scope.isConnectedSocialAccount = function(provider) {
-			return $scope.user.provider === provider || ($scope.user.additionalProvidersData && $scope.user.additionalProvidersData[provider]);
-		};
+        console.log(user)
+        // $scope.selectedRole = $scope.user.role
 
-		// Remove a user social account
-		$scope.removeUserSocialAccount = function(provider) {
-			$scope.success = $scope.error = null;
+        // If user is not signed in then redirect back home
+        if (!$scope.user) $location.path('/');
 
-			$http.delete('/users/accounts', {
-				params: {
-					provider: provider
-				}
-			}).success(function(response) {
-				// If successful show success message and clear form
-				$scope.success = true;
-				$scope.user = Authentication.user = response;
-			}).error(function(response) {
-				$scope.error = response.message;
-			});
-		};
+        // Check if there are additional accounts 
+        $scope.hasConnectedAdditionalSocialAccounts = function(provider) {
+            for (var i in $scope.user.additionalProvidersData) {
+                return true;
+            }
 
-		// Update a user profile
-		$scope.updateUserProfile = function() {
-			$scope.success = $scope.error = null;
-			var user = new Users($scope.user);
+            return false;
+        };
 
-			user.$update(function(response) {
-				$scope.success = true;
-				Authentication.user = response;
-			}, function(response) {
-				$scope.error = response.data.message;
-			});
-		};
+        // Check if provider is already in use with current user
+        $scope.isConnectedSocialAccount = function(provider) {
+            return $scope.user.provider === provider || ($scope.user.additionalProvidersData && $scope.user.additionalProvidersData[provider]);
+        };
 
-		// Change user password
-		$scope.changeUserPassword = function() {
-			$scope.success = $scope.error = null;
+        // Remove a user social account
+        $scope.removeUserSocialAccount = function(provider) {
+            $scope.success = $scope.error = null;
 
-			$http.post('/users/password', $scope.passwordDetails).success(function(response) {
-				// If successful show success message and clear form
-				$scope.success = true;
-				$scope.passwordDetails = null;
-			}).error(function(response) {
-				$scope.error = response.message;
-			});
-		};
-	}
+            $http.delete('/users/accounts', {
+                params: {
+                    provider: provider
+                }
+            }).success(function(response) {
+                // If successful show success message and clear form
+                $scope.success = true;
+                $scope.user = Authentication.user = response;
+            }).error(function(response) {
+                $scope.error = response.message;
+            });
+        };
+
+        // Update a user profile
+        $scope.updateUserProfile = function() {
+            $scope.success = $scope.error = null;
+            var user = new Users($scope.user);
+
+            $scope.user.roles = [$scope.selectedRole];
+            user.$update(function(response) {
+                $scope.success = true;
+                Authentication.user = response;
+            }, function(response) {
+                $scope.error = response.data.message;
+            });
+        };
+
+        // Change user password
+        $scope.changeUserPassword = function() {
+            $scope.success = $scope.error = null;
+
+            $http.post('/users/password', $scope.passwordDetails).success(function(response) {
+                // If successful show success message and clear form
+                $scope.success = true;
+                $scope.passwordDetails = null;
+            }).error(function(response) {
+                $scope.error = response.message;
+            });
+        };
+    }
 ]);
-
-

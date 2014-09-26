@@ -57,7 +57,9 @@ ApplicationConfiguration.registerModule('answers')
             };
 
             if (answer.localVideo) {
+                console.log(answer.localVideo);
                 answer.localVideo = $sce.trustAsResourceUrl(answer.localVideo);
+                console.log(answer.localVideo);
             }
 
         };
@@ -66,8 +68,8 @@ ApplicationConfiguration.registerModule('answers')
     }
 ])
 
-.controller('AnswersController', ['$scope', 'Authentication', 'Answers', 'Questions', 'Grades',
-    function($scope, Authentication, Answers, Questions, Grades) {
+.controller('AnswersController', ['$scope', '$sce', 'Authentication', 'Answers', 'Questions', 'Grades',
+    function($scope, $sce, Authentication, Answers, Questions, Grades) {
         $scope.authentication = Authentication;
 
         $scope.Questions = Questions.init();
@@ -105,13 +107,17 @@ ApplicationConfiguration.registerModule('answers')
             });
         }
 
+        $scope.VideoConfig = {};
+
         Answers.callbacks.findOne.success = function(answer) {
-            $scope.aaa = [{
-                scr: 'http://localhost:3000/' + answer.localVideo,
+            $scope.VideoConfig.sources = [{
+                src: answer.localVideo,
                 type: 'video/mp4'
             }];
 
-            $scope.bbb = 'lib/videogular/default.css';
+            console.log($scope.VideoConfig)
+
+            $scope.VideoConfig.theme = 'lib/videogular-themes-default/videogular.css';
         };
 
 

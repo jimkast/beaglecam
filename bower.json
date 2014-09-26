@@ -16,7 +16,9 @@
     "angular-ui-router": "~0.2.10",
     "ng-file-upload": "~1.6.6",
     "webcam-directive": "~1.1.0",
-    "videogular": "~0.5.1"
+    "videogular": "~0.5.1",
+    "videogular-themes-default": "~0.5.1",
+    "videogular-controls": "~0.5.1"
   },
   "resolutions": {
     "angular": "~1.2"

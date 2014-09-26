@@ -15,7 +15,9 @@ var ApplicationConfiguration = (function() {
         'ui.utils',
 
         'angularFileUpload',
-        'webcam'
+        'webcam',
+        'com.2fdevs.videogular',
+        'com.2fdevs.videogular.plugins.controls'
     ];
 
     // Add a new vertical module

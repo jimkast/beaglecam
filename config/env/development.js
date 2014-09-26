@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-	db: 'mongodb://localhost/cam-project',
+	db: 'mongodb://localhost/cam-project-dev',
 	app: {
 		title: 'Cam Project - Development Environment'
 	},

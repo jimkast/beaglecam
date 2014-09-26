@@ -62,6 +62,10 @@ var UserSchema = new Schema({
 	salt: {
 		type: String
 	},
+	bio:{
+		type: String,
+		default: ''
+	},
 	provider: {
 		type: String,
 		required: 'Provider is required'
@@ -73,7 +77,7 @@ var UserSchema = new Schema({
 			type: String,
 			enum: ['user', 'student', 'teacher', 'admin']
 		}],
-		default: ['user']
+		default: ['student']
 	},
 	updated: {
 		type: Date
