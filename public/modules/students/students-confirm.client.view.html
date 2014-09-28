@@ -12,7 +12,7 @@
 
     <div ng-if="answer.localVideo">
 
-<!--         <videogular vg-theme="VideoConfig.theme">
+        <!--         <videogular vg-theme="VideoConfig.theme">
             <vg-video vg-src="VideoConfig.sources" vg-native-controls="true"></vg-video>
         </videogular>
  -->
@@ -34,11 +34,18 @@
     <br>
 
 
-    <button type="button" class="btn btn-primary" ng-click="Answers.submitAnswer()">
-        SUBMIT
+    <button type="button" class="btn btn-primary" ng-click="enableAnswer()">
+        SUBMIT ANSWER
     </button>
     <a class="btn btn-default" ng-href="#!/questions/{{answer.question._id}}/record">
         TRY AGAIN
     </a>
+
+
+    <br>
+    <br>
+    <p class="alert alert-success" ng-show="answer.enabled">
+        Your answer has been submitted.
+    </p>
 
 </section>

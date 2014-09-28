@@ -36,9 +36,19 @@ ApplicationConfiguration.registerModule('questions')
     }
 ])
 
-.factory('Questions', ['baseCRUD',
-    function(baseCRUD) {
-        return new baseCRUD('questions');
+.factory('Questions', ['baseCRUD', '$location',
+    function(baseCRUD, $location) {
+
+        var Questions = new baseCRUD('questions');
+
+        Questions.callbacks.update.success = function() {
+            $location.path('teachers');
+        };
+        Questions.callbacks.create.success = function() {
+            $location.path('teachers');
+        };
+
+        return Questions;
     }
 ])
 

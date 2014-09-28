@@ -18,7 +18,7 @@ module.exports = {
             ],
             js: [
                 'public/lib/lodash/lodash.min.js',
-                'public/lib/jquery/dist/jquery-1.9.1.js',
+                'public/lib2/jquery/jquery-1.9.1.js',
 
 
 

@@ -1,6 +1,11 @@
 <section ng-controller="StudentsController">
 
-
+    <style>
+    .disappear {
+        position: absolute;
+        left: -9999px
+    }
+    </style>
     <!--  ========= 1. RECORD ============ -->
     <div ng-controller="ScriptcamController" class="pull-right" style="width:340px;" ng-class="{recording: state==RECORDING}">
 
@@ -9,11 +14,7 @@
             <a href="" ng-click="hideCamera=false" ng-show="hideCamera">Show Camera</a>
         </div>
 
-        <div class="inner" ng-class="{'aaa': hideCamera && state != PREPARE_RECORD}">
-
-            <h2>1. Prepare Hardware</h2>
-
-            <!-- <div id="message" ng-bind="Webcam.message"></div> -->
+        <div class="inner" ng-class="{'disappear': hideCamera && state != PREPARE_RECORD}">
 
             <a ng-href="{{Webcam.filename}}" ng-bind="Webcam.filename"></a>
 
@@ -48,17 +49,20 @@
                 </div>
 
                 <br>
-                <p>Time Left:
-                    <span class="h1" ng-bind="Webcam.timeLeft"></span>seconds</p>
+                <p ng-show="state>=PREPARE_RECORD">
+                    Recording Time Left:
+                    <span class="h1" ng-bind="Webcam.timeLeft"></span>
+                    seconds
+                </p>
 
 
-                    <br><br>
+                <br>
 
-                    <button class="btn btn-small" ng-click="Webcam.closeCamera()" ng-disabled="!Webcam.recording">
-                        Stop Recording
-                    </button>
+                <button class="btn btn-small btn-success" ng-click="Webcam.closeCamera()" ng-disabled="!Webcam.recording" ng-show="state==RECORDING">
+                    Stop Recording
+                </button>
 
-                    <!-- <div style="display:none">
+                <!-- <div style="display:none">
 
                     <br/>
                     <button id="recordStartButton" class="btn btn-small" ng-click="Webcam.startRecording()" ng-disabled="connected">Start Recording</button>&nbsp;
@@ -92,26 +96,66 @@
     <div style="margin-right:400px">
 
 
-        <div style="padding:100px;" ng-show="state<=0">
-            <p>Flash Player is required. In order to initialize your web camera you click <b>Allow</b> in Flash window.</p>
+        <div ng-show="state==ERROR">
+            <h4>OOPS! An error has occured.</h4>
+            <p class="alert alert-warning" ng-bind="errorMsg"></p>
+
+            <button class="btn btm-lg btn-primary" ng-click="reloadPage()">RELOAD PAGE</button>
+            <br>
+            <br>
+            <a class="btn btm-lg btn-default" href="#!/students">
+                    &laquo; GO BACK TO INSTRUCTIONS SCREEN
+                </a>
+        </div>
+
+
+        <div style="padding:60px 100px 60px 0;" ng-show="state<READING">
+            <h2>1. Prepare Hardware</h2>
+
+            <br>
+            <br>
+
+
+            <div ng-show="state<=0">
+                <a href="http://get.adobe.com/flashplayer/" target="_blank">
+                    <img src="modules/students/img/flashplayer.gif" />
+                </a>
+                <br>
+                <br>
+                <p><a href="http://get.adobe.com/flashplayer/" target="_blank">Flash Player</a> is required. In order to initialize your web camera you click <b>Allow</b> in Flash window.</p>
+            </div>
+
+
+
+            <!-- READY TO -->
+            <div ng-show="state==CAMERA_READY">
+            <h4>Your hardware is ready! <span class="glyphicon glyphicon-ok" style="color:green"></span></h4>
+                <p>If the camera window is filled everything is OK.</p>
+                <p class="alert alert-warning">Make sure you have also <b>allowed</b> camera recording from you browser.</p>
+                <p>When you are OK with camera perspective and you can view yourself from the camera window press CONTINUE button to continue with the question...</p>
+                <br><br>
+                <button class="btn btm-lg btn-primary" ng-click="startReading()">CONTINUE AND READ THE QUESTION &raquo;</button>
+                <br>
+                <br>
+                <a class="btn btm-lg btn-default" href="#!/students">
+                &laquo; GO BACK TO INSTRUCTIONS SCREEN
+            </a>
+            </div>
 
         </div>
 
         <!-- READY TO -->
-        <div style="padding:100px;" ng-show="state==CAMERA_READY">
-            <h4>Your hardware is ready!</h4>
-            <p>If the camera window is filled everything is OK. Make sure you have also allowed camera recording from you browser.</p>
-            <p>When you are OK with camera perspective and you can view yourself from the camera window press CONTINUE button to continue with the question...</p>
-            <button class="btn btm-lg btn-primary" ng-click="startReading()">CONTINUE AND READ THE QUESTION</button>
-            <a class="btn btm-lg btn-default" href="#!/students">GO BACK TO INSTRUCTIONS SCREEN</a>
-        </div>
+
+
+
+
+
+
 
 
         <div ng-show="state==READING">
 
-            <h5><i>READ THE QUESTION</i>
-            </h5>
-
+            <h2>2. READ THE QUESTION</h2>
 
             <div class="well well-lg">
                 <h3 ng-bind="question.name" style="margin-top:0"></h3>
@@ -137,7 +181,9 @@
 
 
         <div style="padding:100px;" ng-show="state==PREPARE_RECORD">
-            Read time has ended. Be prepared! Record will start in:
+            Read time has ended.
+            <p class="h3">Be prepared!</p>
+            Record will start in:
             <span class="h1" ng-bind="timers.recordPrepare.seconds"></span>
             seconds
 

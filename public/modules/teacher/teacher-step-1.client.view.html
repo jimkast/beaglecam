@@ -10,40 +10,43 @@
 
 
     <div class="row" ng-init="Questions.find()">
-        <div class="col-sm-6">
-            <h2>Main Question Pool (
-                <span ng-bind="questions.length"></span>
-                )
-            </h2>
+        <div class="col-sm-5">
 
-            <a data-ng-href="{{Questions.urls.create()}}" class="btn btn-default">Add New</a>
+            <div class="h2">
+                <a ng-href="{{Questions.urls.create()}}" class="pull-right btn btn-primary">Add New</a>
+                Main Question Pool
+                <span style="display:inline-block">
+                    (
+                    <span ng-bind="questions.length"></span>
+                    )
+                    </span>
+            </div>
+
+
 
             <br>
             <br>
             <br>
 
             <b>Select a question to filter answers:</b>
-            <ul>
+            <ul class="list-unstyled">
                 <li>
-                    <a href="" ng-click="questions.selectedQuestion = ''" ng-class="{'text-danger': !questions.selectedQuestion}">
+                    <a href="" class="list-group-item"  ng-click="questions.selectedQuestion = ''" ng-class="{'active': !questions.selectedQuestion}">
                         <b>--- ALL ---</b>
                     </a>
                 </li>
-                <li ng-repeat="question in questions">
-                    <a href="" ng-click="questions.selectedQuestion = question" ng-class="{'text-danger': questions.selectedQuestion==question}">
-                        <b ng-bind="question.name"></b>
-                        <br>Read Time: <b ng-bind="question.readTime"></b>
+                <li ng-repeat="question in questions" class="rel">
+                    <a class="pull-right btn btn-sm btn-default" ng-href="{{Questions.urls.edit(question._id)}}" ng-click="" style="z-index:5;position:absolute;right:0;top:0">Edit</a>
+                    <a href="" class="list-group-item" style="display:block" ng-click="questions.selectedQuestion = question" ng-class="{'active': questions.selectedQuestion==question}">
+                        <h4 class="list-group-item-heading" ng-bind="question.name"></h4>
+                        Read Time: <b ng-bind="question.readTime"></b>
                         <br>Record Time: <b ng-bind="question.recordTime"></b>
                     </a>
-                    <br>
-                    <a class="btn btn-default" data-ng-href="{{Questions.urls.edit(question._id)}}" ng-click="">Edit</a>
-                    <br>
-                    <br>
                 </li>
             </ul>
         </div>
 
-        <div class="col-sm-6" ng-init="Answers.find()">
+        <div class="col-sm-5 col-xs-offset-1" ng-init="Answers.find()">
             <h2>Submitted Answers (
                 <span ng-bind="filteredAnswers.length"></span>
                 )
@@ -51,14 +54,14 @@
 
             <ul class="list-unstyled row">
                 <li class="list-group-item col-xs-6" ng-repeat="answer in (filteredAnswers = (answers | filter: {'question': questions.selectedQuestion}))">
-                    <a ng-href="{{Answers.urls.view(ans._id)}}" style="display:block">
+                    <a ng-href="{{Answers.urls.view(answer._id)}}" style="display:block">
                         <img ng-src="{{answer.thumbnail}}" />
                         <p>
                             <b>Q:</b> 
                             <span ng-bind="answer.question.name"></span>
                         </p>
                         <small>
-                            by <i ng-bind="answer.user.displayName"></i>
+                            <span class="glyphicon glyphicon-user"></span> <i ng-bind="answer.user.displayName"></i>
                         </small>
                     </a>
                 </li>

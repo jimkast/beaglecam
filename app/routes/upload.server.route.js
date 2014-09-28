@@ -3,8 +3,8 @@
 /**
  * Module dependencies.
  */
+
 var users = require('../../app/controllers/users'),
-    articles = require('../../app/controllers/articles'),
     path = require('path'),
     util = require('util'),
     multiparty = require('multiparty'),
@@ -12,17 +12,10 @@ var users = require('../../app/controllers/users'),
     fs = require('fs'),
     http = require('http'),
     // sys = require("sys"),
-    url = require("url"),
-    events = require("events");
+    url = require("url");
 
 
 
-
-
-var google = require('googleapis');
-var youtube = google.youtube('v3');
-var ResumableUpload = require('node-youtube-resumable-upload');
-var OAuth2Client = google.auth.OAuth2;
 
 
 function generateUniqueFilename() {
@@ -38,56 +31,61 @@ function getFileExtension(filename) {
     return fileParts.pop();
 }
 
-function uploadToYoutube(video_file, tokens, callback) {
-    var google = require("googleapis"),
-        yt = google.youtube('v3');
-
-    var googleConfig = config.google;
-
-    console.log(googleConfig, 'googleConfig', tokens);
-
-    var oauth2Client = new google.auth.OAuth2(googleConfig.clientID, googleConfig.clientSecret, googleConfig.callbackURL);
-    oauth2Client.setCredentials({
-        access_token: tokens.accessToken,
-        refresh_token: tokens.refreshToken
-    });
-    google.options({
-        auth: oauth2Client
-    });
-
-    return yt.videos.insert({
-        part: 'status,snippet',
-        resource: {
-            snippet: {
-                title: 'Test Title...',
-                description: 'Uploaded for cam project'
-            },
-            status: {
-                privacyStatus: 'private' //if you want the video to be private
-            }
-        },
-        media: {
-            body: fs.createReadStream(video_file)
-        }
-    }, function(error, data) {
-        if (error) {
-            callback(error, null);
-        } else {
-            callback(null, data.id);
-        }
-    });
-};
-
-
-
-
-
-
 
 module.exports = function(app) {
 
-
+    /*
     app.route('/youtube').get(function(request, response, next) {
+
+        var google = require('googleapis');
+        var youtube = google.youtube('v3');
+        var ResumableUpload = require('node-youtube-resumable-upload');
+        var OAuth2Client = google.auth.OAuth2;
+
+
+
+        function uploadToYoutube(video_file, tokens, callback) {
+            var google = require("googleapis"),
+                yt = google.youtube('v3');
+
+            var googleConfig = config.google;
+
+            console.log(googleConfig, 'googleConfig', tokens);
+
+            var oauth2Client = new google.auth.OAuth2(googleConfig.clientID, googleConfig.clientSecret, googleConfig.callbackURL);
+            oauth2Client.setCredentials({
+                access_token: tokens.accessToken,
+                refresh_token: tokens.refreshToken
+            });
+            google.options({
+                auth: oauth2Client
+            });
+
+            return yt.videos.insert({
+                part: 'status,snippet',
+                resource: {
+                    snippet: {
+                        title: 'Test Title...',
+                        description: 'Uploaded for cam project'
+                    },
+                    status: {
+                        privacyStatus: 'private' //if you want the video to be private
+                    }
+                },
+                media: {
+                    body: fs.createReadStream(video_file)
+                }
+            }, function(error, data) {
+                if (error) {
+                    callback(error, null);
+                } else {
+                    callback(null, data.id);
+                }
+            });
+        };
+
+
+
 
         var tokens = {
             // access_token: request.user.providerData.accessToken,
@@ -180,12 +178,7 @@ module.exports = function(app) {
 
     });
 
-
-
-
-
-
-
+*/
 
 
     app.route('/upload').post(function(request, response, next) {

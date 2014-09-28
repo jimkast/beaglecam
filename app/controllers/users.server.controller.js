@@ -37,7 +37,8 @@ var getErrorMessage = function(err) {
  */
 exports.signup = function(req, res) {
     // For security measurement we remove the roles from the req.body object
-    delete req.body.roles;
+
+    // delete req.body.roles;
 
     // Init Variables
     var user = new User(req.body);
@@ -272,7 +273,6 @@ exports.hasAuthorization = function(roles) {
  */
 exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
     if (!req.user) {
-        console.log('1111111111111111111111111');
         // Define a search query fields
         var searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
         var searchAdditionalProviderIdentifierField = 'additionalProvidersData.' + providerUserProfile.provider + '.' + providerUserProfile.providerIdentifierField;
@@ -310,9 +310,6 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
                         });
 
 
-        console.log('222222222222222222222222222');
-
-
                         // And save the user
                         user.save(function(err) {
                             return done(err, user);
@@ -326,15 +323,12 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
     } else {
         // User is already logged in, join the provider data to the existing user
         User.findById(req.user.id, function(err, user) {
-            console.log('7777777777777');
             if (err) {
                 return done(err);
             } else {
-                console.log('88888888888888888888');
                 // Check if user exists, is not signed in using this provider, and doesn't have that provider data already configured
                 if (user && (user.provider !== providerUserProfile.provider || user.providerData.accessToken !== providerUserProfile.providerData.accessToken) && (!user.additionalProvidersData || !user.additionalProvidersData[providerUserProfile.provider])) {
 
-                    console.log('9999999999999999999999999')
                     // Add the provider data to the additional provider data field
                     if (!user.additionalProvidersData) user.additionalProvidersData = {};
                     user.additionalProvidersData[providerUserProfile.provider] = providerUserProfile.providerData;

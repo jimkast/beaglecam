@@ -26,7 +26,7 @@
 		<ul class="nav navbar-nav navbar-right" data-ng-show="authentication.user">
 			<li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {{authentication.user.displayName}} <b class="caret"></b>
+				{{authentication.user.displayName}} (<small ng-bind="authentication.user.roles[0]"></small>)<b class="caret"></b>
                 </a>
 				<ul class="dropdown-menu">
 					<li>

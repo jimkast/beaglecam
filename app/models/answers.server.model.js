@@ -10,22 +10,7 @@ var mongoose = require('mongoose'),
  * Answer Schema
  */
 var AnswerSchema = new Schema({
-    description: {
-        type: String,
-        default: 'No Answerrr',
-        required: 'Please fill Answer description'
-    },
-    video: {
-        type: String,
-        default: '',
-        trim: true
-    },
     thumbnail: {
-        type: String,
-        default: '',
-        trim: true
-    },
-    youtubeUrl: {
         type: String,
         default: '',
         trim: true

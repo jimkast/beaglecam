@@ -44,8 +44,9 @@ ApplicationConfiguration.registerModule('answers')
     function(baseCRUD, YouTube, $sce) {
         var Resource = new baseCRUD('answers');
 
-        Resource.callbacks.create.success = function(answer) {};
-        
+        Resource.callbacks.update.success = function() {};
+        Resource.callbacks.create.success = function() {};
+
         Resource.callbacks.findOne.after = function(answer) {
             answer.videoDetails = {
                 embed: $sce.trustAsResourceUrl(
@@ -57,11 +58,9 @@ ApplicationConfiguration.registerModule('answers')
                 )
             };
 
-            if (answer.localVideo) {
-                console.log(answer.localVideo);
-                answer.localVideo = $sce.trustAsResourceUrl(answer.localVideo);
-                console.log(answer.localVideo);
-            }
+            // if (answer.localVideo) {
+            //     answer.localVideo = $sce.trustAsResourceUrl(answer.localVideo);
+            // }
 
         };
 
@@ -86,6 +85,20 @@ ApplicationConfiguration.registerModule('answers')
         $scope.Grades = Grades.init();
         $scope.grade = Grades.single;
         $scope.grades = Grades.list;
+
+        $scope.enableAnswer = function(){
+            $scope.answer.enabled = true;
+            Answers.update(null, function(answer){
+
+            });
+        }
+
+        $scope.excludeCurrent = function(item) {
+            if (item._id == $scope.answer._id) {
+                return false;
+            }
+            return true
+        }
 
 
         $scope.findWithGrade = function() {

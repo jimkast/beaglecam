@@ -80,7 +80,7 @@ ApplicationConfiguration.registerModule('scriptcam')
             Webcam.connected = true;
         };
 
-        Webcam.captureImage = function(){
+        Webcam.captureImage = function() {
             return $.scriptcam.getFrameAsBase64();
         }
 
@@ -116,10 +116,17 @@ ApplicationConfiguration.registerModule('scriptcam')
         };
 
         Webcam.onError = function(errorId, errorMsg) {
-            console.log(errorMsg);
-            if (errorMsg == 'You have reached the maximum time') {
+
+            // You have reached the maximum time
+            console.log(errorId)
+            if (errorId == 11) {
                 Webcam.recording = false;
-                $rootScope.$broadcast('record:end', Webcam.thumbnail);
+                $rootScope.$broadcast('record:end', 'timeout');
+            } else {
+                $rootScope.$broadcast('record:error', {
+                    id: errorId,
+                    msg: errorMsg
+                });
             }
         };
 

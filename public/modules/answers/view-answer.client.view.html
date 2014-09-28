@@ -13,7 +13,7 @@
     <div class="row">
 
         <div class="col-xs-6">
-            <h2>Answer</h2>
+            <h2 style="margin-top:0">Answer</h2>
 
             <video controls ng-src="{{answer.localVideo}}"></video>
 
@@ -29,7 +29,8 @@
                 </small>
             </p>
 
-
+            <br>
+            <br>
 
             <div class="panel panel-success" ng-show="true||authentication.hasRole('teacher')">
 
@@ -55,32 +56,40 @@
         <aside class="col-xs-5 col-xs-offset-1">
 
             <div class="panel panel-default">
-                <div class="panel-heading">User Info</div>
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-user"></span>User Info</div>
 
                 <div class="panel-body">
-                    <h4 ng-bind="answer.user.displayName"></h4>
-                    <small ng-bind="answer.user.email"></small>
-                    <h5><b>Bio:</b>
-                    </h5>
-                    <p ng-bind="answer.user.bio"></p>
+                    <h4>
+                        <span ng-bind="answer.user.displayName"></span>
+                    </h4>
+                    <p>
+                        <small>
+                            <b>Email:</b>
+                            <span ng-bind="answer.user.email"></span>
+                        </small>
+                    </p>
+                    <p>
+                        <b>Bio:</b>
+                        <span ng-bind="answer.user.bio"></span>
+                    </p>
                 </div>
             </div>
 
+            <h3 class="page-header">All user answers</h3>
+            <ul ng-init="Answers.find({'user': answer.user._id})" class="list-unstyled row">
 
-            <h3>All user answers</h3>
-            <hr>
-            <ul class="list-unstyled" ng-init="Answers.find({'user': answer.user._id})">
+                <li ng-repeat="ans in answers | orderBy: 'question.name' | filter: excludeCurrent | groupBy:['question._id']">
+                    <h4 ng-show="ans.group_by_CHANGED" class="col-xs-12">
+                        <span ng-bind="$index+1"></span>.
+                        <span ng-bind="ans.question.name"></span>
+                    </h4>
 
-                <li ng-repeat="ans in answers | orderBy: 'question.name' | groupBy:['question._id']">
-                    <h4 ng-bind="ans.question.name" ng-show="ans.group_by_CHANGED"></h4>
-
-                    <ul class="list-unstyled row">
-                        <li class="list-group-item col-xs-3">
-                            <a ng-href="{{Answers.urls.view(ans._id)}}">
-                                <img ng-src="{{ans.thumbnail}}" />
-                            </a>
-                        </li>
-                    </ul>
+                    <div class="col-xs-4">
+                        <a class="list-group-item" ng-href="{{Answers.urls.view(ans._id)}}">
+                            <img ng-src="{{ans.thumbnail}}" />
+                        </a>
+                    </div>
                 </li>
 
             </ul>

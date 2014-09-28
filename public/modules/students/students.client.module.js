@@ -47,7 +47,8 @@ ApplicationConfiguration.registerModule('students')
             PREPARE_RECORD: 35,
             RECORDING: 40,
             CONVERTING: 50,
-            FINISHED: 60
+            FINISHED: 60,
+            ERROR: 90,
         };
 
 
@@ -74,7 +75,7 @@ ApplicationConfiguration.registerModule('students')
 
                 $scope.answer.question = question._id;
                 // $scope.question.readTime = 3;
-                $scope.question.recordTime = 5;
+                // $scope.question.recordTime = 5;
 
                 $scope.timers = {
                     read: {
@@ -143,9 +144,9 @@ ApplicationConfiguration.registerModule('students')
 
         var saveAndViewAnswer = function() {
             // $timeout(function() {
-                Answers.create(function(answer) {
-                    $location.path('answers/' + answer._id + '/confirm');
-                });
+            Answers.create(function(answer) {
+                $location.path('answers/' + answer._id + '/confirm');
+            });
             // }, 400);
 
         };
@@ -176,6 +177,12 @@ ApplicationConfiguration.registerModule('students')
         };
 
 
+        $scope.reloadPage = function() {
+            // $route.reload();
+            location.reload();
+        }
+
+
 
 
         // $scope.skipReadTimer = function() {
@@ -197,10 +204,15 @@ ApplicationConfiguration.registerModule('students')
         });
 
 
-        $scope.$on('record:end', function() {
-            // $scope.$apply(function() {
-            $scope.state = Constants.CONVERTING;
-            // });
+        $scope.$on('record:end', function(reason) {
+            if (reason == 'timeout') {
+                $scope.$apply(function() {
+                    $scope.state = Constants.CONVERTING;
+                });
+            } else {
+                $scope.state = Constants.CONVERTING;
+            }
+
         });
 
         $scope.$on('record:fileready', function(event, fileName, thumbnail) {
@@ -230,6 +242,15 @@ ApplicationConfiguration.registerModule('students')
 
         });
 
+
+
+        $scope.$on('record:error', function(event, errorObject) {
+            // $scope.$apply(function() {
+            $interval.cancel(timer);
+            $scope.errorMsg = errorObject.msg;
+            $scope.state = Constants.ERROR;
+            // });
+        });
 
 
         $scope.$on('upload:ready', function(event, uploadedFile) {
