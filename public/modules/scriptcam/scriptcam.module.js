@@ -81,17 +81,17 @@ ApplicationConfiguration.registerModule('scriptcam')
         };
 
         Webcam.captureImage = function() {
-            return $.scriptcam.getFrameAsBase64();
+            return jQuery.scriptcam.getFrameAsBase64();
         }
 
         Webcam.startRecording = function() {
-            $.scriptcam.startRecording();
+            jQuery.scriptcam.startRecording();
 
             Webcam.recording = true;
         };
 
         Webcam.closeCamera = function() {
-            $.scriptcam.closeCamera();
+            jQuery.scriptcam.closeCamera();
 
             Webcam.recording = false;
             $rootScope.$broadcast('record:end');
@@ -100,9 +100,9 @@ ApplicationConfiguration.registerModule('scriptcam')
         Webcam.pauseResumeCamera = function() {
 
             if (Webcam.paused) {
-                $.scriptcam.resumeRecording();
+                jQuery.scriptcam.resumeRecording();
             } else {
-                $.scriptcam.pauseRecording();
+                jQuery.scriptcam.pauseRecording();
             }
 
             Webcam.paused = !Webcam.paused;
@@ -158,11 +158,11 @@ ApplicationConfiguration.registerModule('scriptcam')
         };
 
         Webcam.changeCamera = function() {
-            $.scriptcam.changeCamera(Webcam.camera);
+            jQuery.scriptcam.changeCamera(Webcam.camera);
         };
 
         Webcam.changeMicrophone = function(microphoneValue) {
-            $.scriptcam.changeMicrophone(Webcam.microphone);
+            jQuery.scriptcam.changeMicrophone(Webcam.microphone);
         };
 
     }

@@ -118,18 +118,16 @@ ApplicationConfiguration.registerModule('answers')
             });
         }
 
-        // $scope.VideoConfig = {};
+        $scope.VideoConfig = {};
 
-        // Answers.callbacks.findOne.success = function(answer) {
-        //     $scope.VideoConfig.sources = [{
-        //         src: answer.localVideo,
-        //         type: 'video/mp4'
-        //     }];
+        Answers.callbacks.findOne.success = function(answer) {
+            $scope.VideoConfig.sources = [{
+                src: answer.localVideo,
+                type: 'video/mp4'
+            }];
 
-        //     console.log($scope.VideoConfig)
-
-        //     $scope.VideoConfig.theme = 'lib/videogular-themes-default/videogular.css';
-        // };
+            $scope.VideoConfig.theme = 'lib/videogular-themes-default/videogular.css';
+        };
 
 
     }

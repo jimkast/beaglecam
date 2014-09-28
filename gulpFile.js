@@ -16,7 +16,8 @@ var applicationJavaScriptFiles,
     vendorJavaScriptFiles,
     vendorCSSFiles,
     applicationCSSFiles,
-    applicationTestFiles;
+    applicationTestFiles,
+    allImgs;
 
 gulp.task('jshint', function() {
     gulp.src(['gulpFile.js', 'server.js', 'config/**/*.js', 'app/**/*.js', 'public/js/**/*.js', 'public/modules/**/*.js'])
@@ -41,7 +42,14 @@ gulp.task('nodemon', function(done) {
 });
 
 
+
+gulp.task('copyimages', function() {
+    gulp.src('./public/modules/**/img/*', {base: '*/img/'})
+        .pipe(gulp.dest('./public/img'));
+});
+
 gulp.task('uglify', function() {
+
     gulp.src(vendorJavaScriptFiles)
         .pipe(uglify('vendor.min.js', {
             outSourceMap: true
