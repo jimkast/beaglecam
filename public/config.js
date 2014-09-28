@@ -7,17 +7,20 @@ var ApplicationConfiguration = (function() {
     var applicationModuleVendorDependencies = [
         'ngResource',
         'ngCookies',
-        'ngAnimate',
+        // 'ngAnimate',
         'ngTouch',
-        'ngSanitize',
+        // 'ngSanitize',
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
 
         'angularFileUpload',
-        'webcam',
-        'com.2fdevs.videogular',
-        'com.2fdevs.videogular.plugins.controls'
+        // 'webcam',
+        "com.2fdevs.videogular",
+        "com.2fdevs.videogular.plugins.controls",
+        "com.2fdevs.videogular.plugins.overlayplay",
+        "com.2fdevs.videogular.plugins.buffering",
+        "info.vietnamcode.nampnq.videogular.plugins.flash"
     ];
 
     // Add a new vertical module

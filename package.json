@@ -38,12 +38,7 @@
     "glob": "~3.2.9",
     "mongoose-validator": "^1.0.2",
     "validator": "^3.18.1",
-    "connect-multiparty": "^1.2.4",
-    "multiparty": "^3.3.2",
-    "googleapis": "^1.0.14",
-    "node-youtube-resumable-upload": "0.0.3",
-    "google-auth-cli": "0.0.1",
-    "mongodb-uri": "^0.9.7"
+    "multiparty": "^3.3.2"
   },
   "devDependencies": {
     "supertest": "~0.10.0",

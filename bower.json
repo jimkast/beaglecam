@@ -18,7 +18,11 @@
     "webcam-directive": "~1.1.0",
     "videogular": "~0.5.1",
     "videogular-themes-default": "~0.5.1",
-    "videogular-controls": "~0.5.1"
+    "videogular-controls": "~0.5.1",
+    "videogular-flash": "~1.0.0",
+    "videogular-overlay-play": "~0.6.0",
+    "videogular-buffering": "~0.6.0",
+    "videogular-poster": "~0.6.0"
   },
   "resolutions": {
     "angular": "~1.2"

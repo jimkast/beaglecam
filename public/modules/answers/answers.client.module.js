@@ -40,23 +40,23 @@ ApplicationConfiguration.registerModule('answers')
 
 
 
-.factory('Answers', ['baseCRUD', 'YouTube', '$sce',
-    function(baseCRUD, YouTube, $sce) {
+.factory('Answers', ['baseCRUD', '$sce',
+    function(baseCRUD, $sce) {
         var Resource = new baseCRUD('answers');
 
         Resource.callbacks.update.success = function() {};
         Resource.callbacks.create.success = function() {};
 
         Resource.callbacks.findOne.after = function(answer) {
-            answer.videoDetails = {
-                embed: $sce.trustAsResourceUrl(
-                    YouTube.embedUrlFromID(
-                        YouTube.videoIdFromUrl(
-                            answer.video
-                        )
-                    )
-                )
-            };
+            // answer.videoDetails = {
+            //     embed: $sce.trustAsResourceUrl(
+            //         YouTube.embedUrlFromID(
+            //             YouTube.videoIdFromUrl(
+            //                 answer.video
+            //             )
+            //         )
+            //     )
+            // };
 
             // if (answer.localVideo) {
             //     answer.localVideo = $sce.trustAsResourceUrl(answer.localVideo);

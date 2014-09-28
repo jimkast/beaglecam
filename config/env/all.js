@@ -44,7 +44,11 @@ module.exports = {
 
                 'public/lib/webcam-directive/app/scripts/webcam.js',
                 'public/lib/videogular/videogular.js',
-                'public/lib/videogular-controls/controls.js'
+                'public/lib/videogular-buffering/buffering.js',
+                'public/lib/videogular-controls/controls.js',
+                'public/lib/videogular-overlay-play/overlay-play.js',
+                'public/lib/videogular-poster/poster.js',
+                'public/lib/videogular-flash/flash.js',
                 
 
 
