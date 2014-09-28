@@ -22,9 +22,9 @@ module.exports = {
 
 
 
-                'public/lib/ScriptCam-master/scriptcam.js',
-                'public/lib/ScriptCam-master/swfobject.js',
-                'public/lib/ScriptCam-master/jwplayer.js',
+                'public/lib2/ScriptCam-master/scriptcam.js',
+                'public/lib2/ScriptCam-master/swfobject.js',
+                'public/lib2/ScriptCam-master/jwplayer.js',
 
                 'public/lib/ng-file-upload/angular-file-upload-shim.js',
 
