@@ -8,7 +8,7 @@ ApplicationConfiguration.registerModule('crud')
 // .controller('CRUDController', ['$scope', 'Authentication', 'baseCRUD',
 //     function($scope, Authentication, baseCRUD) {
 
-//     	$scope.authentication = Authentication;
+//      $scope.authentication = Authentication;
 
 //         $scope.makeCRUD = function(path) {
 //             return $scope.CRUD = new baseCRUD(path);
@@ -36,6 +36,8 @@ ApplicationConfiguration.registerModule('crud')
                 return that;
             };
 
+            that.init();
+
             var createResource = function(path) {
                 return $resource(path, {
                     pathId: '@_id'
@@ -48,13 +50,13 @@ ApplicationConfiguration.registerModule('crud')
 
             var Resource = createResource(path + '/:pathId');
 
-
+            var emptyFunction = function(request) {};
 
 
             var callbacks = {
                 create: {
-                    before: function(request) {},
-                    after: function(response) {},
+                    before: emptyFunction,
+                    after: emptyFunction,
                     success: function(response) {
                         angular.copy({}, that.single);
                         $location.path(path + '/' + response._id);
@@ -65,8 +67,8 @@ ApplicationConfiguration.registerModule('crud')
                 },
 
                 remove: {
-                    before: function(request) {},
-                    after: function(response) {},
+                    before: emptyFunction,
+                    after: emptyFunction,
                     success: function() {
                         $location.path(path);
                     },
@@ -76,8 +78,8 @@ ApplicationConfiguration.registerModule('crud')
                 },
 
                 update: {
-                    before: function(request) {},
-                    after: function(response) {},
+                    before: emptyFunction,
+                    after: emptyFunction,
                     success: function(response) {
                         $location.path(path + '/' + response._id);
                     },
@@ -87,18 +89,18 @@ ApplicationConfiguration.registerModule('crud')
                 },
 
                 find: {
-                    before: function(request) {},
-                    after: function(response) {},
-                    success: function(response) {},
-                    error: function(response) {},
+                    before: emptyFunction,
+                    after: emptyFunction,
+                    success: emptyFunction,
+                    error: emptyFunction
                 },
 
 
                 findOne: {
-                    before: function(request) {},
-                    after: function(response) {},
-                    success: function(response) {},
-                    error: function(response) {},
+                    before: emptyFunction,
+                    after: emptyFunction,
+                    success: emptyFunction,
+                    error: emptyFunction,
                 }
 
             };
@@ -159,7 +161,7 @@ ApplicationConfiguration.registerModule('crud')
             that.find = function(queryParams, successCallback, errorCallback) {
 
 
-            	var successCallback = successCallback || callbacks.findOne.success;
+                var successCallback = successCallback || callbacks.findOne.success;
                 var errorCallback = errorCallback || callbacks.findOne.error;
 
 

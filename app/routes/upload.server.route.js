@@ -242,7 +242,7 @@ module.exports = function(app) {
             });
             // response.redirect('/uploads/' + fileName);
         });
-    })
+    });
 
 
 
@@ -250,11 +250,12 @@ module.exports = function(app) {
 
 
 
+    app.route('/record').post(function(request, response, next) {
 
-    .get(function(request, response, next) {
 
+        var downloadfile = request.body.path;
+        var base64image = request.body.thumbnail;
 
-        var downloadfile = request.query.path;
 
         if (!downloadfile) {
             return;
@@ -262,42 +263,64 @@ module.exports = function(app) {
 
         var dlprogress = 0;
         var filename = generateUniqueFilename();
-
         var pathPrefix = './public/';
-        var localPath = 'uploads/' + filename + '.mp4';
-        var localfile = pathPrefix + localPath;
+        var videoExtension = '.mp4';
+        var imageExtension = '.jpg';
+        var videoServerPath = 'uploads/' + filename + videoExtension;
+        var videoLocalPath = pathPrefix + videoServerPath;
+        var imageServerPath = 'uploads/' + filename + imageExtension;
+        var imageLocalPath = pathPrefix + imageServerPath;
 
         http.get(downloadfile, function(res) {
-            var writeStream = fs.createWriteStream(localfile, {
+
+            response.writeHead(res.statusCode, {
+                'content-type': 'application/json'
+            });
+
+            if (res.statusCode !== 200) {
+                response.end(
+                    JSON.stringify({
+                        status: res.statusCode
+                    })
+                );
+                return;
+            }
+
+
+            if (base64image) {
+                fs.writeFile(imageLocalPath, new Buffer(base64image, 'base64'), function(err) {
+                    // console.log(err);
+                });
+            }
+
+            var writeStream = fs.createWriteStream(videoLocalPath, {
                 'flags': 'a'
             });
-            console.log("File size " + filename + ": " + res.headers['content-length'] + " bytes.");
+
             res.on('data', function(chunk) {
                 dlprogress += chunk.length;
                 writeStream.write(chunk);
             });
-            res.on("end", function() {
+            res.on('end', function() {
                 writeStream.end();
-                console.log("Finished downloading " + filename);
+            });
+
+
+            writeStream.on('finish', function() {
+
+                response.end(
+                    JSON.stringify({
+                        status: res.statusCode,
+                        path: videoServerPath,
+                        thumbnail: imageServerPath
+                    })
+                );
+
             });
 
 
 
-
-            response.writeHead(200, {
-                'content-type': 'application/json'
-            });
-            response.end(
-                JSON.stringify({
-                    status: 'OK',
-                    message: localfile
-                })
-            );
-
-        })
-
-
-
+        });
 
 
     });

@@ -1,6 +1,5 @@
 <section ng-controller="StudentsController" ng-init="Questions.find()">
 
-
     <h1>INSTRUCTIONS</h1>
 
     <ol>
@@ -21,6 +20,9 @@
     </ol>
 
     <br> 
+
+
+
     
     <div class="form-group">
         <label>Select a question</label>
@@ -30,6 +32,6 @@
     </div>
     
 
-    <a ng-href="#!/questions/{{selectedQuestion}}/record" class="btn btn-lg btn-primary">START</a>
+    <a ng-href="#!/questions/{{selectedQuestion}}/record" class="btn btn-lg btn-primary" ng-disabled="!selectedQuestion">START</a>
 
 </section>

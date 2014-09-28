@@ -1,3 +1,16 @@
+img{max-width: 100%}
+
+.preloader{
+	display: inline-block;
+	text-align: center;
+	width:32px;
+	height: 32px;
+	vertical-align: middle;
+	background-position:  center center; 
+	background-image:url(../img/preloader.gif); 
+}
+
+
 
 .upload-buttons input[type="file"] {	
 	width: 6.3em \0/IE9;
@@ -41,7 +54,7 @@
 	padding-bottom: 5px; 
 }
 
-.progress {
+/*.progress {
 	display: inline-block;
 	width: 100px;	
 	border: 3px groove #CCC;
@@ -51,7 +64,7 @@
 	font-size: smaller;
 	background: orange;
 	width: 0;
-}
+}*/
 
 .drop-box {
 	background: #F8F8F8;

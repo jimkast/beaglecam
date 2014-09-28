@@ -1,43 +1,24 @@
 <section data-ng-controller="AnswersController" data-ng-init="Answers.findOne()">
 
-    <h1>Question</h1>
+    <h1>Answer Review</h1>
+    <hr>
 
-    <b ng-bind="answer.question.name"></b>
+    <h3 ng-bind="answer.question.name"></h3>
     <p ng-bind="answer.question.content"></p>
 
-
-    <h1>Answer</h1>
-
-    <p><b>Content:</b> 
-        <span ng-bind="answer.description"></span>
-    </p>
-
-
-    <b>Video:</b>
-
     <br>
-    <div ng-if="answer.video">
-        <iframe width="420" height="315" ng-src="{{answer.videoDetails.embed}}" frameborder="0" allowfullscreen></iframe>
-    </div>
 
-VideoConfig: {{VideoConfig}}
+    <h4>Video Posted</h4>
 
     <div ng-if="answer.localVideo">
-<!--         <video width="640" height="480" controls>
-            <source ng-src="http://localhost:3000/{{answer.localVideo}}" type="video/mp4">
-                <source src="movie.ogg" type="video/ogg">
-                Your browser does not support the video tag.
-        </video>
- -->
+
 <!--         <videogular vg-theme="VideoConfig.theme">
             <vg-video vg-src="VideoConfig.sources" vg-native-controls="true"></vg-video>
         </videogular>
  -->
 
-        <video controls ng-src="{{VideoConfig.sources[0].src}}"></video>
+        <video controls ng-src="{{answer.localVideo}}"></video>
     </div>
-
-    <br />
     <br />
 
     <small>
@@ -51,14 +32,13 @@ VideoConfig: {{VideoConfig}}
     <br>
     <br>
     <br>
-    <br>
 
-    <button type="button" class="btn btn-primary">
+
+    <button type="button" class="btn btn-primary" ng-click="Answers.submitAnswer()">
         SUBMIT
     </button>
-
-    <button type="button" class="btn btn-default">
+    <a class="btn btn-default" ng-href="#!/questions/{{answer.question._id}}/record">
         TRY AGAIN
-    </button>
+    </a>
 
 </section>

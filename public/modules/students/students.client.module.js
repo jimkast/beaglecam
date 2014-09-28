@@ -3,7 +3,7 @@ ApplicationConfiguration.registerModule('students')
 
 .config(['$stateProvider',
     function($stateProvider) {
-        // Answers state routing
+
         $stateProvider
             .state('students1', {
                 url: '/students',
@@ -31,59 +31,221 @@ ApplicationConfiguration.registerModule('students')
 ])
 
 
-// TO BE REMOVED
-.controller('StudentsController', ['$scope', '$upload', '$sce', '$stateParams', 'Authentication', 'Grades', 'Answers', 'Questions',
-    function($scope, $upload, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
-        $scope.authentication = Authentication;
-
-        $scope.YT = new youtube();
-
-        $scope.Questions = Questions.init();
-        $scope.question = Questions.single;
-        $scope.questions = Questions.list;
 
 
-        $scope.Answers = Answers.init();
-        $scope.answer = Answers.single;
-        $scope.answers = Answers.list;
 
 
-        $scope.onFileSelect = function($files) {
-            //$files: an array of files selected, each file has name, size, and type.
-            for (var i = 0; i < $files.length; i++) {
-                var file = $files[i];
-                $scope.upload = $upload.upload({
-                    url: 'upload', //upload.php script, node.js route, or servlet url
-                    //method: 'POST' or 'PUT',
-                    //headers: {'header-key': 'header-value'},
-                    //withCredentials: true,
-                    data: {
-                        myObj: $scope.myModelObj
-                    },
-                    file: file, // or list of files ($files) for html5 only
-                    //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
-                    // customize file formData name ('Content-Disposition'), server side file variable name. 
-                    //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
-                    // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-                    //formDataAppender: function(formData, key, val){}
-                }).progress(function(evt) {
-                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                }).success(function(data, status, headers, config) {
-                    // file is uploaded successfully
-                    console.log(data);
-                });
-                //.error(...)
-                //.then(success, error, progress); 
-                // access or attach event listeners to the underlying XMLHttpRequest.
-                //.xhr(function(xhr){xhr.upload.addEventListener(...)})
-            }
-            /* alternative way of uploading, send the file binary with the file's content-type.
-       Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed. 
-       It could also be used to monitor the progress of a normal http post/put request with large data*/
-            // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
+.controller('StudentsController', ['$scope', '$rootScope', '$location', '$http', '$timeout', '$interval', '$sce', 'Authentication', 'Answers', 'Questions',
+    function($scope, $rootScope, $location, $http, $timeout, $interval, $sce, Authentication, Answers, Questions) {
+
+        var timer;
+
+        var Constants = {
+            CAMERA_READY: 20,
+            PREPARE_READ: 25,
+            READING: 30,
+            PREPARE_RECORD: 35,
+            RECORDING: 40,
+            CONVERTING: 50,
+            FINISHED: 60
         };
 
+
+        var init = function() {
+            $scope.authentication = Authentication;
+
+            // $scope.YT = new youtube();
+
+            $scope.Questions = Questions.init();
+            $scope.question = Questions.single;
+            $scope.questions = Questions.list;
+
+            $scope.Answers = Answers.init();
+            $scope.answer = Answers.single;
+            $scope.answers = Answers.list;
+
+            $scope.state = 0;
+
+            angular.extend($scope, Constants);
+
+
+
+            Questions.findOne(null, function(question) {
+
+                $scope.answer.question = question._id;
+                // $scope.question.readTime = 3;
+                $scope.question.recordTime = 5;
+
+                $scope.timers = {
+                    read: {
+                        seconds: $scope.question.readTime,
+                    },
+                    record: {
+                        seconds: $scope.question.recordTime,
+                    },
+                    recordPrepare: {
+                        seconds: 3,
+                    }
+                }
+
+                $rootScope.$broadcast('record:init', $scope.question.recordTime);
+
+            });
+        }
+
+
+
+
+
+
+
+
+        $scope.$on('$destroy', function() {
+            $interval.cancel(timer);
+        });
+
+
+
+
+
+        var countdown = function(timerObject, callback) {
+            var intervalMilliseconds = 500;
+
+            if (parseInt(timerObject.seconds, 10) !== timerObject.seconds || timerObject.seconds <= 0) {
+                return;
+            }
+
+
+            timerObject.milliseconds = timerObject.seconds * 1000;
+
+            var totalRepeats = timerObject.milliseconds / intervalMilliseconds;
+
+
+            $interval.cancel(timer);
+
+            var initialMilliseconds = timerObject.milliseconds;
+
+            var countdownFunc = function() {
+                timerObject.milliseconds -= intervalMilliseconds;
+                timerObject.seconds = Math.ceil(timerObject.milliseconds / 1000);
+                timerObject.percent = Math.ceil(100 * (initialMilliseconds - timerObject.milliseconds) / initialMilliseconds);
+            }
+
+
+            timer = $interval(countdownFunc, intervalMilliseconds, totalRepeats, false)
+                .then(function() {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                });
+        }
+
+
+        var saveAndViewAnswer = function() {
+            // $timeout(function() {
+                Answers.create(function(answer) {
+                    $location.path('answers/' + answer._id + '/confirm');
+                });
+            // }, 400);
+
+        };
+
+
+
+
+
+        // $scope.prepareRead = function() {
+        //     $scope.state = Constants.PREPARE_READ;
+        //     countdown($scope, 'prepareReadSeconds', startReading);
+        // };
+
+
+        $scope.startReading = function() {
+            $scope.state = Constants.READING;
+            countdown($scope.timers.read, $scope.prepareRecord);
+        };
+
+        $scope.prepareRecord = function() {
+            $scope.state = Constants.PREPARE_RECORD;
+            countdown($scope.timers.recordPrepare, $scope.startRecording);
+        };
+
+        $scope.startRecording = function() {
+            $scope.state = Constants.RECORDING;
+            $rootScope.$broadcast('record:start');
+        };
+
+
+
+
+        // $scope.skipReadTimer = function() {
+        //     $interval.cancel(timer);
+        //     startReading();
+        // }
+
+
+
+
+        $scope.$on('record:ready', function(event, camerasArray) {
+            $scope.$apply(function() {
+                $scope.state = Constants.CAMERA_READY;
+                if (!camerasArray || !camerasArray.length) {
+                    $scope.noCamera = true;
+                }
+            })
+
+        });
+
+
+        $scope.$on('record:end', function() {
+            // $scope.$apply(function() {
+            $scope.state = Constants.CONVERTING;
+            // });
+        });
+
+        $scope.$on('record:fileready', function(event, fileName, thumbnail) {
+
+            $scope.$apply(function() {
+                $scope.state = Constants.FINISHED;
+            });
+
+            $http({
+                url: 'record',
+                method: 'POST',
+                // params: ,
+                data: {
+                    action: 'record',
+                    path: fileName,
+                    thumbnail: thumbnail
+                }
+            })
+                .success(function(response) {
+                    $scope.answer.localVideo = response.path;
+                    $scope.answer.thumbnail = response.thumbnail;
+                    saveAndViewAnswer();
+                })
+                .error(function(data, status) {
+
+                });
+
+        });
+
+
+
+        $scope.$on('upload:ready', function(event, uploadedFile) {
+            $scope.answer.localVideo = uploadedFile.path;
+            saveAndViewAnswer();
+        });
+
+
+
+
+
+        init();
+
+
     }
+
 ])
 
 
@@ -92,27 +254,24 @@ ApplicationConfiguration.registerModule('students')
 
 
 
-
-
-.controller('StudentsController2', ['$scope', '$location', '$upload', '$http', '$timeout', '$sce', '$stateParams', 'Authentication', 'Grades', 'Answers', 'Questions',
-    function($scope, $location, $upload, $http, $timeout, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
-        $scope.authentication = Authentication;
-
-        $scope.YT = new youtube();
-
-        $scope.Questions = Questions.init();
-        $scope.question = Questions.single;
-        $scope.questions = Questions.list;
-
-
-        $scope.Answers = Answers.init();
-        $scope.answer = Answers.single;
-        $scope.answers = Answers.list;
-
-
+.controller('UploadController', ['$scope', '$rootScope', '$upload', '$http', '$timeout',
+    function($scope, $rootScope, $upload, $http, $timeout) {
 
 
         var uploadUrl = 'upload';
+
+        window.FileAPI = {
+            debug: true,
+            //forceLoad: true, html5: false //to debug flash in HTML5 browsers
+            //wrapInsideDiv: true, //experimental for fixing css issues
+            //only one of jsPath or jsUrl.
+            //jsPath: '/js/FileAPI.min.js/folder/', 
+            //jsUrl: 'yourcdn.com/js/FileAPI.min.js',
+
+            //only one of staticPath or flashUrl.
+            //staticPath: '/flash/FileAPI.flash.swf/folder/'
+            //flashUrl: 'yourcdn.com/js/FileAPI.flash.swf'
+        };
 
 
         $scope.usingFlash = window.FileAPI && window.FileAPI.upload != null;
@@ -193,19 +352,17 @@ ApplicationConfiguration.registerModule('students')
                 });
                 $scope.upload[index].then(function(response) {
                     $timeout(function() {
+
+
+
                         $scope.uploadResult.push(response.data);
 
-                       
 
-                        angular.extend($scope.answer, {
-                            localVideo: response.data.path
-                        });
-                        console.log(Answers);
-                        Answers.create(function(answer){
-                            console.log($scope.answer);
-                            $location.path('answers/' + answer._id + '/confirm');
 
-                        });
+                        $rootScope.$broadcast('upload:ready', response.data);
+
+
+
                     });
                 }, function(response) {
                     if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
@@ -253,9 +410,6 @@ ApplicationConfiguration.registerModule('students')
             }
             return hasFile ? "dragover" : "dragover-err";
         };
-    }
-
-])
 
 
 
@@ -264,121 +418,49 @@ ApplicationConfiguration.registerModule('students')
 
 
 
-.controller('WebcamController', ['$scope', '$upload', '$http', '$timeout', '$sce', '$stateParams', 'Authentication', 'Grades', 'Answers', 'Questions',
-    function($scope, $upload, $http, $timeout, $sce, $stateParams, Authentication, Grades, Answers, Questions) {
-        $scope.authentication = Authentication;
+        /*
+        *============== SIMPLER VERSION ===============
+        *
 
-        var _video = null,
-            patData = null;
-
-        $scope.showDemos = false;
-        $scope.edgeDetection = false;
-        $scope.mono = false;
-        $scope.invert = false;
-
-        $scope.patOpts = {
-            x: 0,
-            y: 0,
-            w: 25,
-            h: 25
-        };
-
-        $scope.webcamError = false;
-        $scope.onError = function(err) {
-            $scope.$apply(
-                function() {
-                    $scope.webcamError = err;
-                }
-            );
-        };
-
-        $scope.onSuccess = function(videoElem) {
-            // The video element contains the captured camera data
-            _video = videoElem;
-            $scope.$apply(function() {
-                $scope.patOpts.w = _video.width;
-                $scope.patOpts.h = _video.height;
-                $scope.showDemos = true;
-            });
-        };
-
-        $scope.onStream = function(stream, videoElem) {
-            // You could do something manually with the stream.
-        };
-
-        /**
-         * Make a snapshot of the camera data and show it in another canvas.
-         */
-        $scope.makeSnapshot = function makeSnapshot() {
-            if (_video) {
-                var patCanvas = document.querySelector('#snapshot');
-                if (!patCanvas) return;
-
-                patCanvas.width = _video.width;
-                patCanvas.height = _video.height;
-                var ctxPat = patCanvas.getContext('2d');
-
-                var idata = getVideoData($scope.patOpts.x, $scope.patOpts.y, $scope.patOpts.w, $scope.patOpts.h);
-                ctxPat.putImageData(idata, 0, 0);
-
-                patData = idata;
-            }
-        };
-
-        var getVideoData = function getVideoData(x, y, w, h) {
-            var hiddenCanvas = document.createElement('canvas');
-            hiddenCanvas.width = _video.width;
-            hiddenCanvas.height = _video.height;
-            var ctx = hiddenCanvas.getContext('2d');
-            ctx.drawImage(_video, 0, 0, _video.width, _video.height);
-            return ctx.getImageData(x, y, w, h);
-        };
-
-        // var getPixelData = function getPixelData(data, width, col, row, offset) {
-        //     return data[((row*(width*4)) + (col*4)) + offset];
-        // };
-
-        // var setPixelData = function setPixelData(data, width, col, row, offset, value) {
-        //     data[((row*(width*4)) + (col*4)) + offset] = value;
-        // };
-
-        (function() {
-            var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-            window.requestAnimationFrame = requestAnimationFrame;
-        })();
-
-        var start = Date.now();
-
-        /**
-         * Apply a simple edge detection filter.
-         */
-        function applyEffects(timestamp) {
-            var progress = timestamp - start;
-
-            if (_video && $scope.edgeDetection) {
-                var videoData = getVideoData(0, 0, _video.width, _video.height);
-
-                var resCanvas = document.querySelector('#result');
-                if (!resCanvas) return;
-
-                resCanvas.width = _video.width;
-                resCanvas.height = _video.height;
-                var ctxRes = resCanvas.getContext('2d');
-                ctxRes.putImageData(videoData, 0, 0);
-
-                // apply edge detection to video image
-                Pixastic.process(resCanvas, "edges", {
-                    mono: $scope.mono,
-                    invert: $scope.invert
+         $scope.onFileSelect = function($files) {
+            //$files: an array of files selected, each file has name, size, and type.
+            for (var i = 0; i < $files.length; i++) {
+                var file = $files[i];
+                $scope.upload = $upload.upload({
+                    url: 'upload', //upload.php script, node.js route, or servlet url
+                    //method: 'POST' or 'PUT',
+                    //headers: {'header-key': 'header-value'},
+                    //withCredentials: true,
+                    data: {
+                        myObj: $scope.myModelObj
+                    },
+                    file: file, // or list of files ($files) for html5 only
+                    //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
+                    // customize file formData name ('Content-Disposition'), server side file variable name. 
+                    //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
+                    // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
+                    //formDataAppender: function(formData, key, val){}
+                }).progress(function(evt) {
+                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                }).success(function(data, status, headers, config) {
+                    // file is uploaded successfully
+                    console.log(data);
                 });
+                //.error(...)
+                //.then(success, error, progress); 
+                // access or attach event listeners to the underlying XMLHttpRequest.
+                //.xhr(function(xhr){xhr.upload.addEventListener(...)})
             }
+            // alternative way of uploading, send the file binary with the file's content-type.
+       //Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed. 
+       //It could also be used to monitor the progress of a normal http post/put request with large data
+            // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
+        };
 
-            if (progress < 20000) {
-                requestAnimationFrame(applyEffects);
-            }
-        }
+        *
+        *
+        */
 
-        requestAnimationFrame(applyEffects);
+
     }
 ]);

@@ -2,7 +2,7 @@
 
     <br>
     <br>
-    
+
     <h1>Teachers Area</h1>
     <hr>
     <br>
@@ -12,7 +12,9 @@
     <div class="row" ng-init="Questions.find()">
         <div class="col-sm-6">
             <h2>Main Question Pool (
-                <span ng-bind="questions.length"></span>)</h2>
+                <span ng-bind="questions.length"></span>
+                )
+            </h2>
 
             <a data-ng-href="{{Questions.urls.create()}}" class="btn btn-default">Add New</a>
 
@@ -43,21 +45,25 @@
 
         <div class="col-sm-6" ng-init="Answers.find()">
             <h2>Submitted Answers (
-                <span ng-bind="answers.length"></span>)</h2>
+                <span ng-bind="filteredAnswers.length"></span>
+                )
+            </h2>
 
-            <ul>
-                <li ng-repeat="answer in answers | filter: {'question': questions.selectedQuestion}">
-                    <a href="#!/answers/{{answer._id}}">
-                    	<img ng-src="{{yt.getThumbnails(yt.videoIdFromUrl(answer.video))[1]}}" />
-                        <br>
-
-                        <b>Q:</b> <span ng-bind="answer.question.name"></span><br>
-                        <p><b>A:</b> <b ng-bind="answer.description"></b></p>
-                        <small>by: <i ng-bind="answer.user.displayName"></i></small>
-                        <hr>
+            <ul class="list-unstyled row">
+                <li class="list-group-item col-xs-6" ng-repeat="answer in (filteredAnswers = (answers | filter: {'question': questions.selectedQuestion}))">
+                    <a ng-href="{{Answers.urls.view(ans._id)}}" style="display:block">
+                        <img ng-src="{{answer.thumbnail}}" />
+                        <p>
+                            <b>Q:</b> 
+                            <span ng-bind="answer.question.name"></span>
+                        </p>
+                        <small>
+                            by <i ng-bind="answer.user.displayName"></i>
+                        </small>
                     </a>
                 </li>
             </ul>
+
         </div>
     </div>
 

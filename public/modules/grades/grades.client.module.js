@@ -39,7 +39,13 @@ ApplicationConfiguration.registerModule('grades')
 
 .factory('Grades', ['baseCRUD',
     function(baseCRUD) {
-        return new baseCRUD('grades');
+
+        var Grades = new baseCRUD('grades');
+        
+        Grades.callbacks.update.success = function() {};
+        Grades.callbacks.create.success = function() {};
+
+        return Grades;
     }
 ])
 

@@ -1,6 +1,6 @@
 <section class="row" data-ng-controller="SettingsController">
 	<h3 class="col-md-12 text-center">Edit your profile</h3>
-	<div class="col-xs-offset-2 col-xs-8 col-md-offset-5 col-md-2">
+	<div class="col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">
 		<form data-ng-submit="updateUserProfile()" class="signin form-horizontal" autocomplete="off">
 			<fieldset>
 				<div class="form-group">
@@ -22,7 +22,7 @@
 
 				<div class="form-group">
 					<label for="username">Bio</label>
-					<textarea id="bio" name="bio" class="form-control" data-ng-model="user.bio" placeholder="Bio"></textarea>
+					<textarea id="bio" name="bio" class="form-control" data-ng-model="user.bio" placeholder="Bio" rows="6"></textarea>
 				</div>
 
 				<div class="form-group">

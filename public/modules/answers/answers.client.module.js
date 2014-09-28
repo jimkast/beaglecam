@@ -45,6 +45,7 @@ ApplicationConfiguration.registerModule('answers')
         var Resource = new baseCRUD('answers');
 
         Resource.callbacks.create.success = function(answer) {};
+        
         Resource.callbacks.findOne.after = function(answer) {
             answer.videoDetails = {
                 embed: $sce.trustAsResourceUrl(
@@ -86,9 +87,6 @@ ApplicationConfiguration.registerModule('answers')
         $scope.grade = Grades.single;
         $scope.grades = Grades.list;
 
-        Grades.callbacks.update.success = function() {};
-        Grades.callbacks.create.success = function() {};
-
 
         $scope.findWithGrade = function() {
             Answers.findOne(null, function(answer) {
@@ -107,18 +105,18 @@ ApplicationConfiguration.registerModule('answers')
             });
         }
 
-        $scope.VideoConfig = {};
+        // $scope.VideoConfig = {};
 
-        Answers.callbacks.findOne.success = function(answer) {
-            $scope.VideoConfig.sources = [{
-                src: answer.localVideo,
-                type: 'video/mp4'
-            }];
+        // Answers.callbacks.findOne.success = function(answer) {
+        //     $scope.VideoConfig.sources = [{
+        //         src: answer.localVideo,
+        //         type: 'video/mp4'
+        //     }];
 
-            console.log($scope.VideoConfig)
+        //     console.log($scope.VideoConfig)
 
-            $scope.VideoConfig.theme = 'lib/videogular-themes-default/videogular.css';
-        };
+        //     $scope.VideoConfig.theme = 'lib/videogular-themes-default/videogular.css';
+        // };
 
 
     }

@@ -20,6 +20,16 @@ var AnswerSchema = new Schema({
         default: '',
         trim: true
     },
+    thumbnail: {
+        type: String,
+        default: '',
+        trim: true
+    },
+    youtubeUrl: {
+        type: String,
+        default: '',
+        trim: true
+    },
     localVideo: {
         type: String,
         default: '',

@@ -1,86 +1,93 @@
-<section data-ng-controller="AnswersController" data-ng-init="findWithGrade()">
+<section ng-controller="AnswersController" ng-init="findWithGrade()">
 
-    <div class="page-header">
-        <h2>Question</h2>
-        <h3 ng-bind="answer.question.name"></h3>
-        <b>Description:</b>
+    <div class="page-header clearfix">
+        <h3><b>Q:</b> 
+            <span ng-bind="answer.question.name"></span>
+        </h3>
+
+        <b class="pull-left">Description:</b> 
         <p ng-bind="answer.question.content"></p>
 
-        <hr>
+    </div>
+
+    <div class="row">
+
+        <div class="col-xs-6">
+            <h2>Answer</h2>
+
+            <video controls ng-src="{{answer.localVideo}}"></video>
 
 
-        <h2>Answer</h2>
-        <p ng-bind="answer.description"></p>
 
-        <div class="pull-right" data-ng-show="authentication.user._id == answer.user._id">
-            <a class="btn btn-primary" href="{{Answers.urls.edit(answer._id)}}">
-                <i class="glyphicon glyphicon-edit"></i>
-            </a>
-            <a class="btn btn-primary" data-ng-click="Answers.remove();">
-                <i class="glyphicon glyphicon-trash"></i>
-            </a>
+            <p>
+                <small>
+                    <em class="text-muted">Posted on
+                        <span ng-bind="answer.created | date:'mediumDate'"></span>
+                        by
+                        <span ng-bind="answer.user.displayName"></span>
+                    </em>
+                </small>
+            </p>
+
+
+
+            <div class="panel panel-success" ng-show="true||authentication.hasRole('teacher')">
+
+                <div class="panel-heading">Teacher's Area</div>
+                <div class="panel-body">
+
+                    <form ng-submit="grade._id ? Grades.update() : Grades.create()">
+                        <label>Put a grade:</label>&nbsp;
+                        <span style="width:200px;display:inline-block;vertical-align:top;text-align:center">
+                            <input type="range" min="0" max="10" value="3" ng-model="grade.value" />
+                            <br>
+                            <div>
+                                <span class="h1" ng-bind="grade.value"></span>&nbsp;
+                            </div>
+                        </span>&nbsp;
+                        <input type="submit" class="btn btn-primary" value="SAVE" />
+                    </form>
+                </div>
+            </div>
+
         </div>
 
+        <aside class="col-xs-5 col-xs-offset-1">
 
-        <iframe width="420" height="315" ng-src="{{answer.videoDetails.embed}}" frameborder="0" allowfullscreen></iframe>
+            <div class="panel panel-default">
+                <div class="panel-heading">User Info</div>
 
-
-        <br />
-        <br />
-    </div>
-
-    <small>
-        <em class="text-muted">Posted on
-            <span data-ng-bind="answer.created | date:'mediumDate'"></span>
-            by
-            <span data-ng-bind="answer.user.displayName"></span>
-        </em>
-    </small>
-
-    <br />
-    <br />
-
-    <div id="userArea">
-        <h3>User Info</h3>
-        <hr>
-        <h4 ng-bind="answer.user.displayName"></h4>
-        <small ng-bind="answer.user.email"></small>
-        <br>
-        <br>
-        <p ng-bind="answer.user.bio"></p>
+                <div class="panel-body">
+                    <h4 ng-bind="answer.user.displayName"></h4>
+                    <small ng-bind="answer.user.email"></small>
+                    <h5><b>Bio:</b>
+                    </h5>
+                    <p ng-bind="answer.user.bio"></p>
+                </div>
+            </div>
 
 
-        <h3>All user answers</h3>
-        <hr>
-        <ul data-ng-init="Answers.find({'user': answer.user._id})">
+            <h3>All user answers</h3>
+            <hr>
+            <ul class="list-unstyled" ng-init="Answers.find({'user': answer.user._id})">
 
-            <li ng-repeat="ans in answers | orderBy: 'question.name' | groupBy:['question._id']">
-                <h4 data-ng-bind="ans.question.name" ng-show="ans.group_by_CHANGED"></h4>
-                <ul>
-                <li><a data-ng-href="{{Answers.urls.view(ans._id)}}" data-ng-bind="ans.description"></a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+                <li ng-repeat="ans in answers | orderBy: 'question.name' | groupBy:['question._id']">
+                    <h4 ng-bind="ans.question.name" ng-show="ans.group_by_CHANGED"></h4>
 
-    <br>
-    <br>
-    <br>
+                    <ul class="list-unstyled row">
+                        <li class="list-group-item col-xs-3">
+                            <a ng-href="{{Answers.urls.view(ans._id)}}">
+                                <img ng-src="{{ans.thumbnail}}" />
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
-    <div data-ng-show="authentication.hasRole('teacher')">
+            </ul>
 
-        <h2>Teacher's Area</h2>
-        <b>Put a grade: <span class="h1" data-ng-bind="grade.value"></span></b>
 
-        <form data-ng-submit="grade._id ? Grades.update() : Grades.create()">
-            <input type="range" min="0" max="10" value="3" data-ng-model="grade.value" style="width:200px" />
-            <input type="submit" class="btn btn-default" value="ADD GRADE" />
-        </form>
+        </aside>
+
 
     </div>
-
-    <br>
-    <br>
-    <br>
-
 </section>

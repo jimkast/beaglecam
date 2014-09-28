@@ -140,10 +140,6 @@ ApplicationConfiguration.registerModule('users')
         $scope.user = angular.extend({}, Authentication.user);
 
 
-        $scope.user.roles = $scope.user.roles || [];
-        $scope.selectedRole = $scope.user.roles[0] || 'student';
-
-        console.log(user)
         // $scope.selectedRole = $scope.user.role
 
         // If user is not signed in then redirect back home
@@ -185,7 +181,6 @@ ApplicationConfiguration.registerModule('users')
             $scope.success = $scope.error = null;
             var user = new Users($scope.user);
 
-            $scope.user.roles = [$scope.selectedRole];
             user.$update(function(response) {
                 $scope.success = true;
                 Authentication.user = response;
