@@ -11,6 +11,10 @@ var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var mocha = require('gulp-mocha');
 var karma = require('gulp-karma');
+var flatten = require('gulp-flatten');
+var minifyHTML = require('gulp-minify-html');
+
+
 
 var applicationJavaScriptFiles,
     vendorJavaScriptFiles,
@@ -43,10 +47,18 @@ gulp.task('nodemon', function(done) {
 
 
 
-gulp.task('copyimages', function() {
-    gulp.src('./public/modules/**/img/*', {base: '*/img/'})
-        .pipe(gulp.dest('./public/img'));
+gulp.task('copyImages', function() {
+    gulp.src('./public/modules/**/img/*')
+        .pipe(flatten())
+        .pipe(gulp.dest('./public/dist/img'));
 });
+
+gulp.task('copyViews', function() {
+    gulp.src('./public/modules/**/*.html', {base: './public'})
+        .pipe(minifyHTML())
+        .pipe(gulp.dest('./public/dist'));
+});
+
 
 gulp.task('uglify', function() {
 
@@ -54,13 +66,13 @@ gulp.task('uglify', function() {
         .pipe(uglify('vendor.min.js', {
             outSourceMap: true
         }))
-        .pipe(gulp.dest('public/dist'));
+        .pipe(gulp.dest('public/dist/js'));
 
     gulp.src(applicationJavaScriptFiles)
         .pipe(uglify('application.min.js', {
             outSourceMap: true
         }))
-        .pipe(gulp.dest('public/dist'));
+        .pipe(gulp.dest('public/dist/js'));
 });
 
 gulp.task('cssmin', function() {
@@ -68,13 +80,13 @@ gulp.task('cssmin', function() {
         .pipe(concat('vendor.css'))
         .pipe(minifyCSS())
         .pipe(rename('vendor.min.css'))
-        .pipe(gulp.dest('public/dist'));
+        .pipe(gulp.dest('public/dist/css'));
 
     gulp.src(applicationCSSFiles)
         .pipe(concat('application.css'))
         .pipe(minifyCSS())
         .pipe(rename('application.min.css'))
-        .pipe(gulp.dest('public/dist'));
+        .pipe(gulp.dest('public/dist/css'));
 });
 
 gulp.task('mochaTest', function() {
@@ -125,7 +137,7 @@ gulp.task('default', ['jshint', 'csslint', 'nodemon', 'watch']);
 gulp.task('lint', ['jshint', 'csslint']);
 
 // Build task(s).
-gulp.task('build', ['jshint', 'csslint', 'loadConfig', 'uglify', 'cssmin']);
+gulp.task('build', ['jshint', 'csslint', 'loadConfig', 'uglify', 'cssmin', 'copyImages', 'copyViews']);
 
 // Test task.
 gulp.task('test', ['loadConfig', 'mochaTest', 'karma']);

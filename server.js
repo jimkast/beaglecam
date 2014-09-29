@@ -3,8 +3,10 @@
  * Module dependencies.
  */
 var init = require('./config/init')(),
-	config = require('./config/config'),
-	mongoose = require('mongoose');
+    config = require('./config/config'),
+    mongoose = require('mongoose'),
+    path = require('path'),
+    db;
 
 
 /**
@@ -14,7 +16,16 @@ var init = require('./config/init')(),
 
 // Bootstrap db connection
 
-var db = mongoose.connect(config.db);
+mongoose.connection.on('error', function(err) {
+  return console.log(err);
+});
+
+
+try {
+    db = mongoose.connect(config.db);
+} catch (err){
+    console.log('sdfsdf', err)
+}
 
 
 // Init the express application

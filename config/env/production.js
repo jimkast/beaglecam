@@ -3,18 +3,19 @@
 module.exports = {
     port: process.env.PORT || 3000,
     db: 'mongodb://localhost/cam-project' || 'mongodb://beagle:b3agl3@ds039010.mongolab.com:39010/cam-project' || process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://localhost/cam-project',
+    rootPath: 'public/dist/',
     assets: {
         lib: {
             css: [],
             js: []
         },
         css: [
-            'public/dist/vendor.min.css',
-            'public/dist/application.min.css'
+            'public/dist/css/vendor.min.css',
+            'public/dist/css/application.min.css'
         ],
         js: [
-            'public/dist/vendor.min.js',
-            'public/dist/application.min.js'
+            'public/dist/js/vendor.min.js',
+            'public/dist/js/application.min.js'
         ]
     },
     facebook: {
@@ -30,7 +31,7 @@ module.exports = {
     google: {
         clientID: process.env.GOOGLE_ID || '359513100602-9jup6gctlodi0qqfhf60qap56is98h3u.apps.googleusercontent.com',
         clientSecret: process.env.GOOGLE_SECRET || 'ACJsqD8rDAASYVDZ5_-zREVV',
-        callbackURL: 'http://projectbeagle.ddns.net:3000/auth/google/callback'
+        callbackURL: 'http://localhost:3000' + '/auth/google/callback'
     },
     linkedin: {
         clientID: process.env.LINKEDIN_ID || 'APP_ID',

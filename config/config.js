@@ -9,11 +9,14 @@ var _ = require('lodash'),
 /**
  * Load app configurations
  */
-module.exports = _.extend(
+
+
+var envConfig = _.extend(
     require('./env/all'),
     require('./env/' + process.env.NODE_ENV) || {}
 );
 
+module.exports = envConfig;
 
 module.exports.uploadDirectory = 'tmp';
 
@@ -38,7 +41,7 @@ module.exports.getGlobbedFiles = function(globPatterns, removeRoot) {
         });
     } else if (_.isString(globPatterns)) {
         if (urlRegex.test(globPatterns)) {
-        	output.push(globPatterns);
+            output.push(globPatterns);
         } else {
             glob(globPatterns, {
                 sync: true
@@ -61,7 +64,7 @@ module.exports.getGlobbedFiles = function(globPatterns, removeRoot) {
  * Get the modules JavaScript files
  */
 module.exports.getJavaScriptAssets = function(includeTests) {
-    var output = this.getGlobbedFiles(this.assets.lib.js.concat(this.assets.js), 'public/');
+    var output = this.getGlobbedFiles(this.assets.lib.js.concat(this.assets.js), envConfig.rootPath);
 
     // To include tests
     if (includeTests) {
@@ -75,6 +78,6 @@ module.exports.getJavaScriptAssets = function(includeTests) {
  * Get the modules CSS files
  */
 module.exports.getCSSAssets = function() {
-    var output = this.getGlobbedFiles(this.assets.lib.css.concat(this.assets.css), 'public/');
+    var output = this.getGlobbedFiles(this.assets.lib.css.concat(this.assets.css), envConfig.rootPath);
     return output;
 };
