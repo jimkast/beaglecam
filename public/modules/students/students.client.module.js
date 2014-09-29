@@ -41,6 +41,7 @@ ApplicationConfiguration.registerModule('students')
         var timer;
 
         var Constants = {
+            NO_CAMERA: 15,
             CAMERA_READY: 20,
             PREPARE_READ: 25,
             READING: 30,
@@ -167,8 +168,13 @@ ApplicationConfiguration.registerModule('students')
         };
 
         $scope.prepareRecord = function() {
-            $scope.state = Constants.PREPARE_RECORD;
-            countdown($scope.timers.recordPrepare, $scope.startRecording);
+
+            if ($scope.noCamera) {
+                $scope.state = Constants.RECORDING;
+            } else {
+                $scope.state = Constants.PREPARE_RECORD;
+                countdown($scope.timers.recordPrepare, $scope.startRecording);
+            }
         };
 
         $scope.startRecording = function() {
@@ -247,8 +253,17 @@ ApplicationConfiguration.registerModule('students')
         $scope.$on('record:error', function(event, errorObject) {
             // $scope.$apply(function() {
             $interval.cancel(timer);
-            $scope.errorMsg = errorObject.msg;
-            $scope.state = Constants.ERROR;
+
+            if (errorObject.id == 3) {
+                $scope.$apply(function() {
+                    $scope.state = Constants.NO_CAMERA;
+                    $scope.noCamera = true;
+                });
+            } else {
+                $scope.errorMsg = errorObjecth.msg;
+                $scope.state = Constants.ERROR;
+            }
+
             // });
         });
 
@@ -343,7 +358,7 @@ ApplicationConfiguration.registerModule('students')
 
         $scope.start = function(index) {
             $scope.progress[index] = 0;
-            $scope.errorMsg = null;
+            $scope.errorUploadMsg = null;
             if ($scope.howToSend == 1) {
                 $scope.upload[index] = $upload.upload({
                     url: uploadUrl,
@@ -386,7 +401,7 @@ ApplicationConfiguration.registerModule('students')
 
                     });
                 }, function(response) {
-                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+                    if (response.status > 0) $scope.errorUploadMsg = response.status + ': ' + response.data;
                 }, function(evt) {
                     // Math.min is to fix IE which reports 200% sometimes
                     $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
@@ -406,7 +421,7 @@ ApplicationConfiguration.registerModule('students')
                     }).then(function(response) {
                         $scope.uploadResult.push(response.data);
                     }, function(response) {
-                        if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+                        if (response.status > 0) $scope.errorUploadMsg = response.status + ': ' + response.data;
                     }, function(evt) {
                         // Math.min is to fix IE which reports 200% sometimes
                         $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));

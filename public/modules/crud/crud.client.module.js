@@ -132,7 +132,7 @@ ApplicationConfiguration.registerModule('crud')
                 if (itemFromList) {
                     itemFromList.$remove(function() {
                         for (var i in that.list) {
-                            if (that.list[i] === object) {
+                            if (that.list[i] === itemFromList) {
                                 that.list.splice(i, 1);
                             }
                         }

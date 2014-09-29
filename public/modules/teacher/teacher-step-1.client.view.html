@@ -19,7 +19,7 @@
                     (
                     <span ng-bind="questions.length"></span>
                     )
-                    </span>
+                </span>
             </div>
 
 
@@ -31,12 +31,22 @@
             <b>Select a question to filter answers:</b>
             <ul class="list-unstyled">
                 <li>
-                    <a href="" class="list-group-item"  ng-click="questions.selectedQuestion = ''" ng-class="{'active': !questions.selectedQuestion}">
+                    <a href="" class="list-group-item" ng-click="questions.selectedQuestion = ''" ng-class="{'active': !questions.selectedQuestion}">
                         <b>--- ALL ---</b>
                     </a>
                 </li>
                 <li ng-repeat="question in questions" class="rel">
-                    <a class="pull-right btn btn-sm btn-default" ng-href="{{Questions.urls.edit(question._id)}}" ng-click="" style="z-index:5;position:absolute;right:0;top:0">Edit</a>
+                    <div style="z-index:5;position:absolute;right:0;top:0">
+                        <a class="btn btn-sm btn-default pull-left" ng-href="{{Questions.urls.edit(question._id)}}">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+
+                        <a class="btn btn-sm btn-danger pull-left" href="" ng-click="Questions.remove(question)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                    </div>
+
+
                     <a href="" class="list-group-item" style="display:block" ng-click="questions.selectedQuestion = question" ng-class="{'active': questions.selectedQuestion==question}">
                         <h4 class="list-group-item-heading" ng-bind="question.name"></h4>
                         Read Time: <b ng-bind="question.readTime"></b>

@@ -30,7 +30,7 @@ ApplicationConfiguration.registerModule('scriptcam')
 
         var Webcam = {};
         $scope.Webcam = Webcam;
-        window.Webcam = Webcam;
+        // window.Webcam = Webcam;
 
 
         $scope.$on('record:init', function(event, recordTime) {
@@ -118,7 +118,7 @@ ApplicationConfiguration.registerModule('scriptcam')
         Webcam.onError = function(errorId, errorMsg) {
 
             // You have reached the maximum time
-            console.log(errorId)
+            // console.log(errorId, errorMsg)
             if (errorId == 11) {
                 Webcam.recording = false;
                 $rootScope.$broadcast('record:end', 'timeout');

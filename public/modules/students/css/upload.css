@@ -1,6 +1,6 @@
 img{max-width: 100%}
 .rel{position: relative;}
-
+video, object, embed, iframe{max-width: 100%}
 .preloader{
 	display: inline-block;
 	text-align: center;
