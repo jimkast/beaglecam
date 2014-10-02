@@ -1,18 +1,65 @@
 <section data-ng-controller="HomeController">
     <h1 class="text-center">WELCOME {{authentication.user.displayName}}!</h1>
+
+
+
     <section>
-    	<h2>INSTRUCTIONS</h2>
-        <p>
-        	Before you begin we recommend you read the instructions.
-        </p>
+        <div class="text-center">
+
+            <div style="margin:0 auto;max-width:600px">
+                <h3>Welcome to the place where you can ask and answer questions and give and grade answers live,
+                    <br><b>any time, all the time</b>
+                </h3>
+            </div>
+
+            <br>
+
+            <img src="modules/core/img/eye.jpg" alt="Cam Project" width="300" />
+
+            <br>
+            <br>
+            <br>
+
+            <h3>Are you a...</h3>
+            <br>
 
 
-        <ol>
-        	<li>Press start button.</li>
-        	<li>Press start button.</li>
-        	<li>Press start button.</li>
+            <div style="margin:0 auto;max-width:800px">
 
-        </ol>
+                <div class="row">
+                    <div class="col-xs-4">
 
+                        <button class="btn btn-lg btn-warning" ng-click="checkAuth('students1')">STUDENT ?</button>
+                        <br>
+                        <br>
+                        <p>Answer the questions</p>
+
+                    </div>
+
+                    <div class="col-xs-4">
+                        <br>
+                        <!-- <span class="h4">or a...</span> -->
+                    </div>
+                    <div class="col-xs-4">
+                        <button class="btn btn-lg btn-primary" ng-click="checkAuth('teacher1')">TEACHER ?</button>
+                        <br>
+                        <br>
+                        <p>View answers and grade them</p>
+                    </div>
+                </div>
+
+                <br>
+                <p class="alert alert-warning" ng-show="errorMsg">You have to login first. <a href="#!/signin">Login</a> or <a href="#!/signup">Signup</a>.</p>
+
+            </div>
+
+        </div>
+
+        <br>
+        <br>
+
+        <!--         <p class="text-center">
+            * Before you begin we recommend you read the instructions.
+        </p> -->
     </section>
 </section>

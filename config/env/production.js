@@ -3,7 +3,7 @@
 module.exports = {
     port: process.env.PORT || 3000,
     db: 'mongodb://localhost/cam-project' || 'mongodb://beagle:b3agl3@ds039010.mongolab.com:39010/cam-project' || process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://localhost/cam-project',
-    rootPath: 'public/dist/',
+    rootPath: 'public/',
     assets: {
         lib: {
             css: [],

@@ -65,7 +65,7 @@
             <ul class="list-unstyled row">
                 <li class="list-group-item col-xs-6" ng-repeat="answer in (filteredAnswers = (answers | filter: {'question': questions.selectedQuestion}))">
                     <a ng-href="{{Answers.urls.view(answer._id)}}" style="display:block">
-                        <img ng-src="{{answer.thumbnail}}" />
+                        <img ng-src="{{answer.thumbnail || 'modules/students/img/default_thumbnail.jpg'}}" />
                         <p>
                             <b>Q:</b> 
                             <span ng-bind="answer.question.name"></span>

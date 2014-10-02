@@ -13,7 +13,8 @@ var mocha = require('gulp-mocha');
 var karma = require('gulp-karma');
 var flatten = require('gulp-flatten');
 var minifyHTML = require('gulp-minify-html');
-
+var clean = require('gulp-clean');
+var replace = require('gulp-replace');
 
 
 var applicationJavaScriptFiles,
@@ -46,17 +47,50 @@ gulp.task('nodemon', function(done) {
 });
 
 
+gulp.task('cleandist', function() {
+    // return gulp.src('./public/dist/*', {read: false})
+    //     .pipe(clean({force:true}));
+
+    return gulp.src('./public/dist/modules/*', {read: false})
+        .pipe(clean({force:true}));
+});
+
 
 gulp.task('copyImages', function() {
-    gulp.src('./public/modules/**/img/*')
+    return gulp.src(['./public/modules/**/img/**'], {base:'./public'})
+        // .pipe(gulp.dest('./public/dist'))
         .pipe(flatten())
         .pipe(gulp.dest('./public/dist/img'));
 });
 
 gulp.task('copyViews', function() {
-    gulp.src('./public/modules/**/*.html', {base: './public'})
-        .pipe(minifyHTML())
+
+
+    return gulp.src('./public/modules/**', {base: './public'})
+        // .pipe(minifyHTML())
         .pipe(gulp.dest('./public/dist'));
+        
+    // gulp.src('./public/dist/modules/**/*.js', {read: false})
+    //     .pipe(clean({force:true}));
+
+
+});
+
+
+gulp.task('removeJs', function() { 
+    // return gulp.src('./public/dist/modules/*/*.js', {read: false})
+    //     .pipe(clean({force:true}));
+
+});
+
+
+
+
+
+gulp.task('copyLib2', function() {
+    return gulp.src('./public/lib2/*', {base: './public'})
+        .pipe(gulp.dest('./public/dist'));
+
 });
 
 
@@ -137,7 +171,8 @@ gulp.task('default', ['jshint', 'csslint', 'nodemon', 'watch']);
 gulp.task('lint', ['jshint', 'csslint']);
 
 // Build task(s).
-gulp.task('build', ['jshint', 'csslint', 'loadConfig', 'uglify', 'cssmin', 'copyImages', 'copyViews']);
+// gulp.task('build', ['loadConfig', 'uglify', 'cssmin', 'copyViews', 'removeJs', 'copyImages']);
+gulp.task('build', ['loadConfig', 'uglify', 'cssmin', 'copyImages']);
 
 // Test task.
 gulp.task('test', ['loadConfig', 'mochaTest', 'karma']);

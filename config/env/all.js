@@ -20,9 +20,9 @@ module.exports = {
                 'public/lib/lodash/lodash.min.js',
                 'public/lib2/jquery/jquery-1.9.1.js',
 
-                'public/lib2/ScriptCam-master/scriptcam.js',
+                // 'public/lib2/ScriptCam-master/scriptcam.js',
                 // 'public/lib2/ScriptCam-master/swfobject.js',
-                'public/lib2/ScriptCam-master/jwplayer.js',
+                // 'public/lib2/ScriptCam-master/jwplayer.js',
 
                 'public/lib/ng-file-upload/angular-file-upload-shim.js',
 
