@@ -8,4 +8,5 @@ app/tests/coverage/
 .bower-*/
 .idea/
 uploads/
-public/uploads/*
+public/uploads/*.jpg
+public/uploads/*.mp4
