@@ -31,7 +31,7 @@ module.exports = {
     google: {
         clientID: process.env.GOOGLE_ID || '359513100602-9jup6gctlodi0qqfhf60qap56is98h3u.apps.googleusercontent.com',
         clientSecret: process.env.GOOGLE_SECRET || 'ACJsqD8rDAASYVDZ5_-zREVV',
-        callbackURL: 'http://localhost:3000' + '/auth/google/callback'
+        callbackURL: 'http://projectbeagle.ddns.net:3000' + '/auth/google/callback'
     },
     linkedin: {
         clientID: process.env.LINKEDIN_ID || 'APP_ID',
